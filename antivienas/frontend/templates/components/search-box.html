@@ -1,0 +1,38 @@
+<div class="search-container">
+    <form action="/" method="get">
+        <div class="search-box">
+            <i class="fa fa-search fa-fw"></i>
+            <input class="search-field" type="search" name="q" id="q" placeholder="vardas, pomėgis, specialybė...">
+            <input type="submit" value="Ieškoti" class="search-submit">
+        </div>
+        <div class="filter-container">
+            <div class="filter">
+                <select name="vieta" id="city-filter">
+                    <option value="" selected>Miestas</option>
+                    <option value="">----------</option>
+                    <option value="vilnius">Vilnius</option>
+                    <option value="naujoji-akmene">Naujoji Akmenė</option>
+
+                </select>
+            </div>
+            <div class="filter">
+                <select name="lytis" id="gender-filter">
+                    <option value="" selected>Lytis</option>
+                    <option value="">----------</option>
+                    <option value="vyr">vyrai</option>
+                    <option value="mot">moterys</option>
+                </select>
+            </div>
+            <div class="filter">
+                <select name="rikiavimas" id="gender-filter">
+                    <option value="" selected>Pirmenybė</option>
+                    <option value="">----------</option>
+                    <option value="price_up">Pigiausi</option>
+                    <option value="price_down">Brangiausi</option>
+                    <option value="age_up">Jaunausi</option>
+                    <option value="age_down">Seniausi</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>

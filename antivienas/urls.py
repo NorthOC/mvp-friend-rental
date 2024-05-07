@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from antivienas.backend import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.index, name="index"),
+    path('registracija/', views.register, name="register"),
+    path("prisijungimas/", views.login, name="login"),
+    path("profile/<int:user_id>/", views.profile, name="profile"),
+    path("susitikimai/", views.meeting_manager, name="meeting-manager")
 ]
