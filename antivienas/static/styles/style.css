@@ -476,7 +476,7 @@ main{
     background: white;
     max-width: 1000px;
     margin-bottom: 50px;
-    border-radius: 0px 0px 50px 50px;
+    border-radius: 0px 0px 20px 20px;
     box-shadow: 0px 0px 5px 0px var(--fade);
     padding: 0px 20px;
 }
@@ -593,6 +593,12 @@ main{
 .manager-container .yellow{
     background-color: var(--yellow);
 }
+.manager-container .red{
+    background-color: var(--red);
+}
+.manager-container .gray{
+    background-color: var(--light-gray);
+}
 .manager-container .order-status p{
     padding-right: 5px;
 }
@@ -603,6 +609,8 @@ main{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 600px;
  }
   .model-inner {
     background-color: white;
@@ -611,11 +619,14 @@ main{
     padding: 2em;
     margin: auto;
 }
-  .modal-header {
+.modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid black;
+    margin-bottom: 25px;
+}
+.modal-header h3{
+    font-weight: 500;
 }
 [x-cloak] {
     display: none !important;
@@ -628,6 +639,42 @@ main{
     left: 0;
     background: black;
     opacity: 0.50;
+}
+.modal #reason{
+    width: 100%;
+    box-shadow: inset 1px 1px 2px 2px var(--fade);
+    border: none;
+    min-height: 100px;
+    border-radius: 20px;
+    font-size: 18px;
+    padding: 10px 15px;
+    resize: none;
+}
+.modal form .aligner{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 20px;
+}
+.modal form button{
+    min-width: 100px;
+    font-size: 16px;
+    min-height: 35px;
+    background: var(--yellow);
+    border: 1px solid black;
+    border-radius: 10px;
+}
+.modal form button:hover{
+    text-decoration: underline;
+}
+.modal .shell{
+    position: relative;
+}
+.modal #text-counter {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
 }
 
 
