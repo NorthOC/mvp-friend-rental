@@ -17,7 +17,9 @@ def login(request):
 
 def profile(request, user_id):
     """viewing of a user/friend profile"""
-    pass
+    template = "pages/profile.html"
+    context = {"user_id": user_id}
+    return render(request, template, context)
 
 def meeting_manager(request):
     """for managing user/friend meetings"""

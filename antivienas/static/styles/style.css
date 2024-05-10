@@ -676,6 +676,14 @@ main{
     bottom: 10px;
     right: 20px;
 }
+/* PROFILE MANAGER */
+.middle-container .profile-manager{
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
 
 
 
