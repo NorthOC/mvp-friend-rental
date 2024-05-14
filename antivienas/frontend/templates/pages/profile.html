@@ -10,7 +10,7 @@
     <title>Draugai | Anti Vienas</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body>
+<body x-data="{'isIDModalOpen': false, 'isEditModalOpen': false, 'isOrderModalOpen': false}" x-on:keydown.escape="isIDModalOpen=false; isEditModalOpen=false; isOrderModalOpen=false">
     {% include "components/top-nav.html" %}
     <main class="main-section main-double-split">
         <div class="left-container">
@@ -93,12 +93,229 @@
                     <p>Galiu laisvai bendrauti Lietuvių, Anglų, Rusų ir Ispanų kalbomis. :)</p>
                 </div>
                 <div class="btn-container">
-                    <button type="button" id="edit-profile-btn">Redaguoti profilį</button>
-                    <button type="button" id="order-btn">Siūlyti susitikti</button>
+                    <button type="button" id="edit-profile-btn" x-on:click="isEditModalOpen = true">Redaguoti profilį</button>
+                    <button type="button" id="order-btn" x-on:click="isIDModalOpen = true">Patvirtinti tapatybę</button>
+                    <button type="button" id="order-btn" x-on:click="isOrderModalOpen = true">Siūlyti susitikti</button>
                 </div>
             </div>
         </div>
-
     </main>
+    <div class="overlay" x-show="isIDModalOpen || isEditModalOpen || isOrderModalOpen" x-cloak></div>
+    <div
+        class="modal"
+        role="dialog"
+        tabindex="-1"
+        x-show="isIDModalOpen"
+        x-on:click.away="isIDModalOpen = false"
+        x-cloak
+        >
+            <div class="model-inner">
+            <div class="modal-header">
+                <h3>Įkelkite asmens dokumento nuotrauką</h3>
+                <button aria-label="Close" x-on:click="isIDModalOpen=false" id="close-modal">✖</button>
+            </div>
+            <small>Dėl patikimumo, draugai su patvirtinta tapatybę sulaukia daugiau užsakymų iš vartotojų.</small><br><br>
+            <small>Tapatybės patvirtinimas gali užtrukti 1-3 darbo dienas. Kad viskas vyktų sklandžiai, prašome įkelti tvarkingą asmens dokumento nuotrauką.</small>
+            <p><strong>Reikalavimai:</strong></p>
+                <ul>
+                    <li>Nuotraukos dydis iki 2MB</li>
+                    <li>Galimi formatai: png, jpg, jpeg, webp</li>
+                </ul>
+            <form action="" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="user-id" value="1">
+                <div class="shell">
+                    <input type="file" name="image" id="image-input">
+                </div>
+                <div class="aligner">
+                    <button type="submit" class="warning">Įkelti</button>
+                    <button aria-label="Close" x-on:click="isIDModalOpen=false" type="reset">Uždaryti</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div
+        class="modal"
+        role="dialog"
+        tabindex="-1"
+        x-show="isOrderModalOpen"
+        x-on:click.away="isOrderModalOpen = false"
+        x-cloak
+        >
+            <div class="model-inner">
+            <div class="modal-header">
+                <h3>Susitikimo užklausa</h3>
+                <button aria-label="Close" x-on:click="isOrderModalOpen=false" id="close-modal">✖</button>
+            </div>
+            <small>Po užklausos išsiuntimo, draugas turės ją peržiūrėti ir patvirtinti. Taigi, prieš einant susitikti, būtinai sulaukti patvirtinimo.</small>
+            <form action="" method="post">
+                <input type="hidden" name="user-id" value="1">
+                <div class="shell">
+                </div>
+                <div class="aligner">
+                    <button type="submit" class="warning">Įkelti</button>
+                    <button aria-label="Close" x-on:click="isOrderModalOpen=false" type="reset">Uždaryti</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div
+        class="modal"
+        role="dialog"
+        tabindex="-1"
+        x-show="isEditModalOpen"
+        x-on:click.away="isEditModalOpen = false"
+        x-cloak
+        >
+            <div class="model-inner">
+            <div class="modal-header">
+                <h3>Profilio duomenys</h3>
+                <button aria-label="Close" x-on:click="isEditModalOpen=false" id="close-modal">✖</button>
+            </div>
+            <form action="" method="post" enctype="multipart/form-data" class="profile-form">
+                <div class="profile-field">
+                    <label for="fname">*Vardas:</label>
+                    <input type="text" name="fname">
+                </div>
+                <div class="profile-field">
+                    <label for="birthday">*Gimimo data:</label>
+                    <input type="date" name="birthday">
+                </div>
+                <div class="profile-field">
+                    <label for="lname">*Pavardė:</label>
+                    <input type="text" name="lname">
+                </div>
+                <div class="profile-field">
+                    <label for="city">*Susitikimų vieta:</label>
+                    <select name="city" id="">
+                        <option value="vilnius" selected>Vilnius</option>
+                        <option value="naujoji-akmene">Naujoji Akmenė</option>
+                    </select>
+                </div>
+                <div class="profile-field">
+                    <label for="job">Specialybė:</label>
+                    <input type="text" name="job" id="" maxlength="40">
+                </div>
+                <div class="profile-field">
+                    <label for="education">Išsilavinimas:</label>
+                    <select name="education" id="">
+                        <option value="vidurinis" selected>Vidurinis</option>
+                        <option value="aukstasis">Aukštasis</option>
+                        <option value="aukstesnysis">Aukštesnysis</option>
+                    </select>
+                </div>
+                <div class="profile-field">
+                    <div class="age-gender">
+                        <div class="flex-col">
+                            <label for="gender">*Lytis:</label>
+                            <select name="gender" id="">
+                                <option value="vyr">Vyras</option>
+                                <option value="mot">Moteris</option>
+                            </select>
+                        </div>
+                        <div class="flex-col">
+                            <label for="job">Ūgis cm:</label>
+                            <input type="number" min="0" max="300">
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-field">
+                    <label for="personality">Asmenybė:</label>
+                    <select name="personality" id="">
+                        <option value="intravert" id="">Intravertė/as</option>
+                        <option value="ekstravert" id="">Ekstravertė/as</option>
+                    </select>
+                </div>
+                <div class="profile-field">
+                    <div class="flex-col">
+                        <label for="interest-one">1) Pomėgis:</label>
+                        <input type="text" name="interest-one" id="" maxlength="50">
+                    </div>
+                    <input type="hidden" name="interest-color-one" id="interest-color-one" value="#dcdcdc">
+                </div>
+                <div class="color-picker" id="color-picker-one">
+                    <div class="color-box" style="background-color: #dcdcdc;" data-color="#dcdcdc"></div>
+                    <div class="color-box" style="background-color: #FCD5D5;" data-color="#FCD5D5"></div>
+                    <div class="color-box" style="background-color: #D5EEFC;" data-color="#D5EEFC"></div>
+                    <div class="color-box" style="background-color: #F1B8F2;" data-color="#F1B8F2"></div>
+                    <div class="color-box" style="background-color: #B8F2C1;" data-color="#B8F2C1"></div>
+                    <div class="color-box" style="background-color: #F6EAA5;" data-color="#F6EAA5"></div>
+                </div>
+                <div class="profile-field">
+                    <label for="interest-two">2) Pomėgis:</label>
+                    <input type="text" name="interest-two" id="" maxlength="50">
+                    <input type="hidden" name="interest-color-two" id="interest-color-two" value="#dcdcdc">
+                </div>
+                <div class="color-picker" id="color-picker-two">
+                    <div class="color-box" style="background-color: #dcdcdc;" data-color="#dcdcdc"></div>
+                    <div class="color-box" style="background-color: #FCD5D5;" data-color="#FCD5D5"></div>
+                    <div class="color-box" style="background-color: #D5EEFC;" data-color="#D5EEFC"></div>
+                    <div class="color-box" style="background-color: #F1B8F2;" data-color="#F1B8F2"></div>
+                    <div class="color-box" style="background-color: #B8F2C1;" data-color="#B8F2C1"></div>
+                    <div class="color-box" style="background-color: #F6EAA5;" data-color="#F6EAA5"></div>
+                </div>
+                <div class="profile-field">
+                    <label for="interest-three">3) Pomėgis:</label>
+                    <input type="text" name="interest-three" id="" maxlength="50">
+                    <input type="hidden" name="interest-color-three" id="interest-color-three" value="#dcdcdc">
+                </div>
+                <div class="color-picker" id="color-picker-three">
+                    <div class="color-box" style="background-color: #dcdcdc;" data-color="#dcdcdc"></div>
+                    <div class="color-box" style="background-color: #FCD5D5;" data-color="#FCD5D5"></div>
+                    <div class="color-box" style="background-color: #D5EEFC;" data-color="#D5EEFC"></div>
+                    <div class="color-box" style="background-color: #F1B8F2;" data-color="#F1B8F2"></div>
+                    <div class="color-box" style="background-color: #B8F2C1;" data-color="#B8F2C1"></div>
+                    <div class="color-box" style="background-color: #F6EAA5;" data-color="#F6EAA5"></div>
+                </div>
+                <div class="profile-field">
+                    <label for="interest-four">4) Pomėgis:</label>
+                    <input type="text" name="interest-four" id="" maxlength="50">
+                    <input type="hidden" name="interest-color-four" id="interest-color-four" value="#dcdcdc">
+                </div>
+                <div class="color-picker" id="color-picker-four">
+                    <div class="color-box" style="background-color: #dcdcdc;" data-color="#dcdcdc"></div>
+                    <div class="color-box" style="background-color: #FCD5D5;" data-color="#FCD5D5"></div>
+                    <div class="color-box" style="background-color: #D5EEFC;" data-color="#D5EEFC"></div>
+                    <div class="color-box" style="background-color: #F1B8F2;" data-color="#F1B8F2"></div>
+                    <div class="color-box" style="background-color: #B8F2C1;" data-color="#B8F2C1"></div>
+                    <div class="color-box" style="background-color: #F6EAA5;" data-color="#F6EAA5"></div>
+                </div>
+                <div class="aligner">
+                    <button type="submit" class="warning">Atnaujinti</button>
+                    <button aria-label="Close" x-on:click="isEditModalOpen=false" type="button">Uždaryti</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        let arr = ["one", "two", "three", "four"];
+
+        arr.forEach((num) =>{
+            let color_picker_id = "color-picker-" + num;
+            let interest_id = "interest-color-" + num;
+
+            let color_picker = document.getElementById(color_picker_id);
+            let picks = color_picker.getElementsByClassName("color-box");
+            
+            for (let i = 0; i < picks.length; i++){
+                let input = document.getElementById(interest_id);
+                //initial selection of color
+                if (picks[i].dataset.color == input.value){
+                    picks[i].classList.add("selected-color");
+                }
+
+                picks[i].addEventListener("click",()=>{
+                    let selected_color = picks[i].dataset.color;
+                    input.value = selected_color;
+                    for (let j = 0; j < picks.length; j++){
+                        picks[j].classList.remove("selected-color");
+                    }
+                    picks[i].classList.add("selected-color");
+
+                })
+            };
+        })
+    </script>
 </body>
 </html>

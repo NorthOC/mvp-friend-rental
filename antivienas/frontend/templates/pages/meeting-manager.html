@@ -95,33 +95,6 @@
                             <div class="alert-color-box yellow"></div></td>
                     </tr>
                 </table>
-                <div
-                    class="modal"
-                    role="dialog"
-                    tabindex="-1"
-                    x-show="isModalOpen"
-                    x-on:click.away="isModalOpen = false"
-                    x-cloak
-                    >
-                        <div class="model-inner">
-                        <div class="modal-header">
-                            <h3>Ar tikrai norite atšaukti susitikimą?</h3>
-                            <button aria-label="Close" x-on:click="isModalOpen=false" id="close-modal">✖</button>
-                        </div>
-                        <form action="" method="post">
-                            <input type="hidden" name="order-id" x-model="orderID">
-                            <div class="shell">
-                                <textarea name="reason" id="reason" placeholder="Paaiškinimas vartotojui" maxlength="100"></textarea>
-                                <div id="text-counter"><small id="counter-num">100</small>/<small id="counter-max">100</small></div>
-                            </div>
-                            <div class="aligner">
-                                <button type="submit">Taip</button>
-                                <button aria-label="Close" x-on:click="isModalOpen=false" type="reset" id="reset">Ne</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="overlay" x-show="isModalOpen" x-cloak></div>
                 <div id="inactive-meeting-expander" class="meeting-expander" @click="inactive_expanded = ! inactive_expanded">
                     <h2>Ankstesni susitikimai (36)</h2>
                     <svg class="closed-icon" x-show="!inactive_expanded" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
@@ -207,6 +180,33 @@
             </div>
         </div>
     </main>
+    <div class="overlay" x-show="isModalOpen" x-cloak></div>
+                <div
+                    class="modal"
+                    role="dialog"
+                    tabindex="-1"
+                    x-show="isModalOpen"
+                    x-on:click.away="isModalOpen = false"
+                    x-cloak
+                    >
+                        <div class="model-inner">
+                        <div class="modal-header">
+                            <h3>Ar tikrai norite atšaukti susitikimą?</h3>
+                            <button aria-label="Close" x-on:click="isModalOpen=false" id="close-modal">✖</button>
+                        </div>
+                        <form action="" method="post">
+                            <input type="hidden" name="order-id" x-model="orderID">
+                            <div class="shell">
+                                <textarea name="reason" id="reason" placeholder="Paaiškinimas vartotojui" maxlength="100"></textarea>
+                                <div id="text-counter"><small id="counter-num">100</small>/<small id="counter-max">100</small></div>
+                            </div>
+                            <div class="aligner">
+                                <button type="submit" class="warning">Taip</button>
+                                <button aria-label="Close" x-on:click="isModalOpen=false" type="reset" id="reset">Ne</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
     <script>
         let counter = document.getElementById("counter-num");
         let text_count = document.getElementById("reason");

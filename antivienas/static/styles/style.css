@@ -568,9 +568,10 @@ main{
     gap: 5px;
     font-size: 16px;
     cursor: pointer;
+    text-decoration: underline;
 }
 .manager-container .btn:hover{
-    text-decoration: underline;
+    text-decoration: none;
 }
 .manager-container .table-form{
     display: flex;
@@ -603,12 +604,9 @@ main{
     padding-right: 5px;
 }
 .modal {
-    position: fixed;
+    position: absolute;
     z-index: 10;
     top: 0;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 100%;
     max-width: 600px;
  }
@@ -656,17 +654,22 @@ main{
     justify-content: center;
     margin-top: 30px;
     gap: 20px;
+    grid-column: span 2;
 }
 .modal form button{
     min-width: 100px;
     font-size: 16px;
     min-height: 35px;
-    background: var(--yellow);
+    background: white;
     border: 1px solid black;
     border-radius: 10px;
+    text-decoration: underline;
 }
 .modal form button:hover{
-    text-decoration: underline;
+    text-decoration: none;
+}
+.modal .warning{
+    background-color: var(--yellow);
 }
 .modal .shell{
     position: relative;
@@ -675,6 +678,71 @@ main{
     position: absolute;
     bottom: 10px;
     right: 20px;
+}
+.modal ul{
+    margin: 10px auto;
+}
+.modal p{
+    margin: 10px auto;
+}
+.modal input[type='file']{
+    margin-top: 20px;
+}
+.modal .profile-field{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    position: relative;
+}
+.modal .profile-form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.modal .profile-form input[type='date']{
+    width: fit-content;
+}
+.modal .profile-form input[type='text'], .modal .profile-form select{
+    max-width: 150px;
+}
+.modal .profile-form input[type='number']{
+    max-width: 65px;
+}
+form .color-box{
+    width: 15px;
+    height: 15px;
+    border: 1px solid transparent;
+    transition: 500ms;
+}
+form .color-picker{
+    display: flex;
+    width: fit-content;
+    gap: 10px;
+    background: white;
+    box-shadow: 0px 0px 5px 2px var(--fade);
+    padding: 10px;
+    border-radius: 20px;
+    margin: 10px 0px;
+    align-items: center;
+}
+.color-picker .color-box:hover{
+    transition: 500ms;
+    border: 1px solid black;
+}
+.color-picker .selected-color{
+    border: 1px solid black;
+}
+form .flex-col{
+    display: flex;
+    flex-direction: column;
+}
+form .flex-row{
+    display: flex;
+    flex-direction: row;
+}
+.profile-form .age-gender{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 /* PROFILE MANAGER */
 .middle-container .profile-manager{
@@ -686,6 +754,9 @@ main{
     margin-top: 20px;
     margin-bottom: 50px;
 }
+.profile-manager .description-container{
+    margin-right: 20px;
+}
 .profile-manager .description-container p{
     margin-top: 20px;
 }
@@ -696,7 +767,7 @@ main{
 .profile-manager .images-container{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 }
 .profile-manager .info-container{
     display: flex;
@@ -705,6 +776,8 @@ main{
 .profile-manager .details-container{
     display: grid;
     grid-template-columns: 1.1fr 4fr;
+    gap: 10px;
+    align-items: center;
 }
 .carousel svg{
     width: 10px;
@@ -716,12 +789,14 @@ main{
 }
 .images-container .image-container img{
     max-width: 160px;
+    border-radius: 50%;
 }
 .images-container .img-preview{
     max-width: 40px;
 }
 .images-container .img-preview img{
     width: 100%;
+    border-radius: 50%;
 }
 .info-container .name-container{
     display: flex;
