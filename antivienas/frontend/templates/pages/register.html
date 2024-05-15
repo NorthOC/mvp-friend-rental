@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    <title>Registracija | Anti Vienas</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    {% include "components/top-nav.html" %}
+    <main class="main-section main-triple-split">
+        <div class="left-container">
+            {% include "components/side-nav.html" %}
+            {% include "components/terms-of-service.html" %}
+        </div>
+        <div class="middle-container">
+            <div class="login-form-container">
+                <div class="link-container">
+                    <a href="/prisijungti/">Prisijungimas</a>
+                    <a href="#" class="current-page">Registracija</a>
+                </div>
+                <div class="login-container">
+                    <form action="" class="login" method="post">
+                        <div class="grid-container">
+                            <div class="field">
+                                <label for="fname">Vardas:</label>
+                                <input type="input" name="fname" id="" required>
+                            </div>
+                            <div class="field">
+                                <label for="lname">Pavardė:</label>
+                                <input type="input" name="lname" id="" required>
+                            </div>
+                            <div class="field">
+                                <label for="city">Susitikimo vieta:</label>
+                                <select name="city" id="" required>
+                                    <option value="" disabled></option>
+                                    <option value="nuotoliniu">Nuotoliniu</option>
+                                    <option value="naujoji akmene">Naujoji Akmenė</option>
+                                    <option value="vilnius">Vilnius</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="gender">Lytis:</label>
+                                <select name="gender" id="gender" required>
+                                    <option value="" disabled></option>
+                                    <option value="vyr">Vyras</option>
+                                    <option value="mot">Moteris</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="email">El. paštas:</label>
+                            <input type="email" name="email" id="" required autofocus>
+                        </div>
+                        <div class="grid-container">
+                            <div class="field">
+                                <label for="password">Slaptažodis:</label>
+                                <input type="password" name="password" id="" required>
+                            </div>
+                            <div class="field">
+                                <label for="birthday">Gimimo data:</label>
+                                <input type="date" name="birthday" id="" required>
+                            </div>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="agreement" id="agreement">
+                            <label for="agreement">Perskaičiau ir sutinku su <a href="#">vartotojų taisyklėmis</a> ir <a href="#">privatumo sąlygomis</a>.</label>
+                        </div>
+                        <button type="submit" id="login-btn">Prisijungti</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="right-container">
+
+        </div>
+
+    </main>
+</body>
+</html>

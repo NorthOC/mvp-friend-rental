@@ -9,11 +9,13 @@ def index(request):
 
 def register(request):
     """registration of user"""
-    pass
+    template = "pages/register.html"
+    return render(request, template)
 
 def login(request):
     """login part"""
-    pass
+    template = "pages/login.html"
+    return render(request, template)
 
 def profile(request, user_id):
     """viewing of a user/friend profile"""

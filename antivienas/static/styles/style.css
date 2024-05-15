@@ -19,6 +19,7 @@
     --yellow: #F6EAA5;
     --checkmark-color: #3c9940;
     --light-green: #CFF8D1;
+    --light-green-hover: #b0f5b6;
     --accept-color: #84DC75;
     --pink: #F97FA4;
     --red: #FF8C8C;
@@ -247,7 +248,7 @@ main{
     border: none;
     min-height: 40px;
     border-radius: 20px;
-    padding-left: 45px;
+    padding-left: 15px;
     width: 100%;
     font-size: 18px;
 }
@@ -638,7 +639,7 @@ main{
     background: black;
     opacity: 0.50;
 }
-.modal #reason{
+.modal #reason, .modal #comment{
     width: 100%;
     box-shadow: inset 1px 1px 2px 2px var(--fade);
     border: none;
@@ -694,6 +695,22 @@ main{
     margin-bottom: 20px;
     position: relative;
 }
+.modal .meeting-field{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    position: relative;
+}
+.modal .meeting-field-row{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    justify-content: right;
+    gap: 10px;
+}
+.modal hr{
+    margin: 20px 0px;
+}
 .modal .profile-form{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -743,6 +760,31 @@ form .flex-row{
     display: flex;
     flex-direction: row;
     gap: 10px;
+}
+.meeting-form .flex-row{
+    gap: 20px;
+}
+.modal .explainer{
+    display: block;
+    margin-bottom: 20px;
+}
+.meeting-form #meeting-length{
+    width: 60px;
+}
+.meeting-form #meeting-price{
+    border: none;
+    color: black;
+    width: 80px;
+}
+.meeting-form #meeting-address{
+    box-shadow: inset 1px 1px 2px 2px var(--fade);
+    border: none;
+    border-radius: 15px;
+    font-size: 18px;
+    padding: 10px 15px;
+}
+.meeting-form .bolder{
+    font-size: 20px;
 }
 /* PROFILE MANAGER */
 .middle-container .profile-manager{
@@ -867,6 +909,95 @@ form .flex-row{
 }
 .profile-manager .btn-container button:hover{
     text-decoration: none;
+}
+/* LOGIN AND REGISTER PAGES */
+.middle-container .login-form-container{
+    box-shadow: 0px 0px 4px 0px var(--fade);
+    border-radius: 25px;
+    background-color: white;
+    max-width: 650px;
+    width: 100%;
+    margin-top: 50px;
+}
+.login-form-container .link-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--fade);
+}
+.link-container a{
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+}
+.link-container a:first-child{
+    border-right: 1px solid var(--fade);
+    border-radius: 25px 0px 0px 0px;
+}
+.link-container a:last-child{
+    border-right: 1px solid var(--fade);
+    border-radius: 0px 25px 0px 0px;
+}
+.link-container .current-page{
+    background-color: var(--soft-blue);
+    text-decoration: none;
+    cursor: default;
+}
+.login-container .login{
+    padding: 20px 30px;
+}
+.login .field{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+.login input[type="email"], .login input[type="password"], .login input[type="input"], select, .login input[type="date"]  {
+    border-radius: 15px;
+    border: 1px solid var(--fade);
+    box-shadow: 0px 0px 4px 1px var(--fade);
+    font-size: 20px;
+    padding-left: 12px;
+    background-color: white;
+    height: 35px;
+}
+.login label{
+    font-size: 1em;
+    padding-left: 10px;
+    color: var(--pre-text);
+}
+.login #remember-me, .login #agreement{
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+    cursor: pointer;
+    vertical-align: top;
+}
+.login #login-btn{
+    margin-top: 20px;
+    width: 100%;
+    height: 40px;
+    font-size: 1.2em;
+    text-decoration: underline;
+    background-color: var(--light-green);
+    border: 1px solid var(--fade);
+    cursor: pointer;
+}
+.login #login-btn:hover{
+    text-decoration: none;
+}
+.login .grid-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.login .grid-container input, .login .grid-container select{
+    max-width: 200px;
+    width: 100%;
+}
+.login .grid-container #gender{
+    width: fit-content;
 }
 
 

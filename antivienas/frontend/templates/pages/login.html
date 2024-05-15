@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    <title>Prisijungimas | Anti Vienas</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    {% include "components/top-nav.html" %}
+    <main class="main-section main-triple-split">
+        <div class="left-container">
+            {% include "components/side-nav.html" %}
+            {% include "components/terms-of-service.html" %}
+        </div>
+        <div class="middle-container">
+            <div class="login-form-container">
+                <div class="link-container">
+                    <a href="#" class="current-page">Prisijungimas</a>
+                    <a href="/registruotis/">Registracija</a>
+                </div>
+                <div class="login-container">
+                    <form action="" class="login" method="post">
+                        <div class="field">
+                            <label for="email">El. paštas:</label>
+                            <input type="email" name="email" id="" required autofocus>
+                        </div>
+                        <div class="field">
+                            <label for="password">Slaptažodis:</label>
+                            <input type="password" name="password" id="" required>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="remember-me" id="remember-me">
+                            <label for="remember-me">Prisiminti mane šiame kompiuteryje</label>
+                        </div>
+                        <button type="submit" id="login-btn">Prisijungti</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="right-container">
+
+        </div>
+
+    </main>
+</body>
+</html>

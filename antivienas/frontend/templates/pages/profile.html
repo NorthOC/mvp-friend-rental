@@ -147,14 +147,60 @@
                 <h3>Susitikimo užklausa</h3>
                 <button aria-label="Close" x-on:click="isOrderModalOpen=false" id="close-modal">✖</button>
             </div>
-            <small>Po užklausos išsiuntimo, draugas turės ją peržiūrėti ir patvirtinti. Taigi, prieš einant susitikti, būtinai sulaukti patvirtinimo.</small>
-            <form action="" method="post">
-                <input type="hidden" name="user-id" value="1">
-                <div class="shell">
+            <small class="explainer">Po užklausos išsiuntimo, draugas turės ją peržiūrėti ir patvirtinti. Taigi, prieš susitikimą, būtinai patikrinkite, ar jūsų užsakymas buvo patvirtintas.</small>
+            <form action="" class="meeting-form" method="post">
+                    <div class="meeting-field">
+                        <label for="meeting-day">Susitikimo diena:</label>
+                        <input type="date" name="meeting-day" id="meeting-day">
+                    </div>
+                    <div class="meeting-field">
+                        <label for="meeting-hour">Valanda:</label>
+                        <select name="meeting-hour" id="">
+                            <option value="0900">09:00</option>
+                            <option value="0930">09:30</option>
+                            <option value="1000">10:00</option>
+                            <option value="1030">10:30</option>
+                            <option value="1100">11:00</option>
+                            <option value="1130">11:30</option>
+                            <option value="1200">12:00</option>
+                            <option value="1230">12:30</option>
+                            <option value="1300">13:00</option>
+                            <option value="1330">13:30</option>
+                            <option value="1400">14:00</option>
+                            <option value="1430">14:30</option>
+                            <option value="1500">15:00</option>
+                            <option value="1530">15:30</option>
+                            <option value="1600">16:00</option>
+                            <option value="1630">16:30</option>
+                            <option value="1700">17:00</option>
+                            <option value="1730">17:30</option>
+                            <option value="1800">18:00</option>
+                            <option value="1830">18:30</option>
+                            <option value="1900">19:00</option>
+                            <option value="1930">19:30</option>
+                            <option value="2000">20:00</option>
+                        </select>
+                    </div>
+                    <div class="meeting-field">
+                        <label>Trukmė val.</label>
+                        <input type="number" name="meeting-length" id="meeting-length" min="1" max="336" value="1">
+                    </div>
+                <div class="meeting-field">
+                    <label for="meeting-place">Susitikimo vieta:</label>
+                    <input type="text" name="meeting-place" id="meeting-address" placeholder="adresas ir detalės" required>
                 </div>
+                <label for="meeting-comment">Komentaras:</label>
+                <textarea name="meeting-comment" id="comment" placeholder="ką veiksite susitikimo metu" required></textarea>
+                <hr>
+                <div class="meeting-field-row">
+                    <label class="bolder"><strong>Galutinė kaina: </strong></label>
+                    <input type="text" disabled id="meeting-price" class="bolder">
+                </div>
+                <hr>
+
                 <div class="aligner">
-                    <button type="submit" class="warning">Įkelti</button>
-                    <button aria-label="Close" x-on:click="isOrderModalOpen=false" type="reset">Uždaryti</button>
+                    <button type="submit" class="warning">Teikti užklausą</button>
+                    <button aria-label="Close" x-on:click="isOrderModalOpen=false" type="button">Uždaryti</button>
                 </div>
             </form>
         </div>
@@ -316,6 +362,24 @@
                 })
             };
         })
+    </script>
+
+    <script>
+        let date = new Date();
+        let meeting_date = document.getElementById("meeting-day");
+        date.setDate(date.getDate() + 1)
+        meeting_date.min = date.toISOString().split('T')[0];
+        meeting_date.value = date.toISOString().split('T')[0];
+        
+        let meeting_length = document.getElementById("meeting-length");
+        let meeting_price = document.getElementById("meeting-price");
+        let user_price = 25;
+        meeting_price.value = (meeting_length.value * user_price).toString() + " €";
+
+        meeting_length.addEventListener("input", ()=>{
+            meeting_price.value = (meeting_length.value * user_price).toString() + " €";
+        })
+
     </script>
 </body>
 </html>
