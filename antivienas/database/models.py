@@ -70,8 +70,8 @@ class CityOfService(models.TextChoices):
     NUOTOLINIU =        "Nuotoliniu"
 
 class Genders(models.TextChoices):
-    VYR = "vyr"
-    MOT = "mot"
+    VYRAS = "Vyras"
+    MOTERIS = "Moteris"
 
 def user_img_upload_path(instance, filename):
     return f"user_uploads/user_{instance.pk}/{filename}"
@@ -113,7 +113,7 @@ class User(AbstractUser):
     job =               models.CharField(max_length=40, null=True, blank=True)
     description =       models.TextField(max_length=5000, null=True, blank=True)
     personality_type =  models.CharField(max_length=10, choices=PersonalityTypes, null=True, blank=True)
-    gender =            models.CharField(max_length=3, choices=Genders, blank=True, null=True)
+    gender =            models.CharField(max_length=10, choices=Genders, blank=True, null=True)
     height_cm =         models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(300)])
 
     img_one =           models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)

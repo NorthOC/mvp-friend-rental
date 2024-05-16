@@ -20,9 +20,10 @@ from antivienas.backend import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name="index"),
-    path('registruotis/', views.register, name="register"),
-    path("prisijungti/", views.login, name="login"),
-    path("profilis/<int:user_id>/", views.profile, name="profile"),
-    path("susitikimai/", views.meeting_manager, name="meeting-manager")
+    path('', views.index_page, name="index"),
+    path('registruotis/', views.register_page, name="register"),
+    path("prisijungti/", views.login_page, name="login"),
+    path("atsijungti/", views.logout_action, name="logout"),
+    path("profilis/<int:user_id>/", views.profile_page, name="profile"),
+    path("susitikimai/", views.meeting_page, name="meeting-page")
 ]

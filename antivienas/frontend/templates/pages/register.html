@@ -20,27 +20,28 @@
         <div class="middle-container">
             <div class="login-form-container">
                 <div class="link-container">
-                    <a href="/prisijungti/">Prisijungimas</a>
+                    <a href="{% url 'login' %}">Prisijungimas</a>
                     <a href="#" class="current-page">Registracija</a>
                 </div>
                 <div class="login-container">
                     <form action="" class="login" method="post">
+                        {% csrf_token %}
                         <div class="grid-container">
                             <div class="field">
-                                <label for="fname">Vardas:</label>
-                                <input type="input" name="fname" id="" required>
+                                <label for="first_name">Vardas:</label>
+                                <input type="input" name="first_name" id="" required>
                             </div>
                             <div class="field">
-                                <label for="lname">Pavardė:</label>
-                                <input type="input" name="lname" id="" required>
+                                <label for="last_name">Pavardė:</label>
+                                <input type="input" name="last_name" id="" required>
                             </div>
                             <div class="field">
                                 <label for="city">Susitikimo vieta:</label>
                                 <select name="city" id="" required>
                                     <option value="" disabled></option>
-                                    <option value="nuotoliniu">Nuotoliniu</option>
-                                    <option value="naujoji akmene">Naujoji Akmenė</option>
-                                    <option value="vilnius">Vilnius</option>
+                                    {% for key, value in cities %}
+                                    <option value="{{value}}">{{key}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="field">
@@ -54,11 +55,11 @@
                         </div>
                         <div class="field">
                             <label for="email">El. paštas:</label>
-                            <input type="email" name="email" id="" required autofocus>
+                            <input type="email" name="email" id="" required>
                         </div>
                         <div class="grid-container">
                             <div class="field">
-                                <label for="password">Slaptažodis:</label>
+                                <label for="password1">Slaptažodis:</label>
                                 <input type="password" name="password" id="" required>
                             </div>
                             <div class="field">
@@ -70,7 +71,7 @@
                             <input type="checkbox" name="agreement" id="agreement">
                             <label for="agreement">Perskaičiau ir sutinku su <a href="#">vartotojų taisyklėmis</a> ir <a href="#">privatumo sąlygomis</a>.</label>
                         </div>
-                        <button type="submit" id="login-btn">Prisijungti</button>
+                        <button type="submit" id="login-btn">Registruotis</button>
                     </form>
                 </div>
             </div>

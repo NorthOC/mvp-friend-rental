@@ -21,10 +21,11 @@
             <div class="login-form-container">
                 <div class="link-container">
                     <a href="#" class="current-page">Prisijungimas</a>
-                    <a href="/registruotis/">Registracija</a>
+                    <a href="{% url 'register' %}">Registracija</a>
                 </div>
                 <div class="login-container">
                     <form action="" class="login" method="post">
+                        {% csrf_token %}
                         <div class="field">
                             <label for="email">El. paštas:</label>
                             <input type="email" name="email" id="" required autofocus>

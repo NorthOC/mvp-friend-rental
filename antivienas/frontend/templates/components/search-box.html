@@ -1,29 +1,31 @@
 <div class="search-container">
-    <form action="/" method="get">
+    <form action="" method="get">
         <div class="search-box">
-            <input class="search-field" type="search" name="q" id="q" placeholder="vardas, pomėgis, specialybė..." autocomplete="off">
+            <input class="search-field" type="search" name="q" id="q" placeholder="pvz. Jonas" autocomplete="off">
             <input type="submit" value="Ieškoti" class="search-submit">
         </div>
         <div class="filter-container">
             <div class="filter">
-                <select name="vieta" id="city-filter">
+                <select name="city" id="city-filter">
                     <option value="" selected>Miestas</option>
                     <option value="">----------</option>
-                    <option value="vilnius">Vilnius</option>
-                    <option value="naujoji-akmene">Naujoji Akmenė</option>
+                    {% for key, value in cities %}
+                    <option value="{{value}}">{{key}}</option>
+                    {% endfor %}
 
                 </select>
             </div>
             <div class="filter">
-                <select name="lytis" id="gender-filter">
+                <select name="gender" id="gender-filter">
                     <option value="" selected>Lytis</option>
                     <option value="">----------</option>
-                    <option value="vyr">vyrai</option>
-                    <option value="mot">moterys</option>
+                    {% for key, value in genders %}
+                    <option value="{{value}}">{{key}}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="filter">
-                <select name="rikiavimas" id="gender-filter">
+                <select name="filter-by" id="gender-filter">
                     <option value="" selected>Pirmenybė</option>
                     <option value="">----------</option>
                     <option value="age_up">Jaunausi</option>
