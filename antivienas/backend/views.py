@@ -4,11 +4,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from antivienas.database.models import CityOfService, User, Genders
+from antivienas.database.models import CityOfService, User, Genders, FriendSetting
 
 #GLOBAL VARS
-CITY_CHOICES = CityOfService.choices
-GENDERS = Genders.choices
+CITY_CHOICES = dict((value, key) for key, value in CityOfService.choices)
+GENDERS = dict((value, key) for key, value in Genders.choices)
 
 
 # Create your views here.
@@ -20,13 +20,34 @@ def index_page(request):
 
     search_query = request.GET.get('q') if request.GET.get('q') != None else ''
     city = request.GET.get('city') if request.GET.get('city') != None else ''
+    if city:
+        city = CITY_CHOICES[city]
     gender = request.GET.get('gender') if request.GET.get('gender') != None else ''
+    if gender:
+        gender = GENDERS[gender]
+    sort_by = request.GET.get('filter-by') if request.GET.get('filter-by') != None else ''
+    context['search_query'] = search_query
+    context['city'] = city
+    context['gender'] = gender
+    context['sort_by'] = sort_by
 
-    users = User.objects.filter(
-        Q(first_name__icontains=search_query) |
-        Q(city__icontains=city) |
-        Q(gender__icontains=gender)
+    friends = FriendSetting.objects.filter(
+        Q(is_public=True) &
+        Q(friend__first_name__icontains=search_query) &
+        Q(friend__city__icontains=city) &
+        Q(friend__gender__icontains=gender)
     )
+    if friends:
+        match sort_by:
+            case 'age_up':
+                friends = friends.order_by('-friend__birthday')
+            case 'age_down':
+                friends = friends.order_by('friend__birthday')
+            case _:
+                pass
+
+    context['friends'] = friends
+
     return render(request, template, context)
 
 def register_page(request):

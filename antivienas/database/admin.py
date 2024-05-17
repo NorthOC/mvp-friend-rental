@@ -4,7 +4,7 @@ from .models import User, FriendSetting, Dispute, Order
 # Čia registruojami modeliai bus matomi admin/ valdymo skyde
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'profile_type', 'email', 'first_name', 'last_name', 'birthday', 'city')
+    list_display = ('pk', 'profile_type', 'email', 'first_name', 'last_name', 'gender', 'birthday', 'city')
     search_fields = ('first_name', 'last_name', 'city', 'email', 'pk')
 
 class FriendSettingAdmin(admin.ModelAdmin):

@@ -20,12 +20,18 @@
         <div class="middle-container">
             {% include "components/search-box.html" %}
 
-            <!-- IF NO RESULTS FOUND
-                <p class="no-results-search">
+            {% if friends %}
+
+            {% for user in friends %}
+                {% include "components/friend-card.html" %}
+            {% endfor %}
+            
+            {% else %}
+
+            <p class="no-results-search">
                 Draugų, su tokiais paieškos parametrais, neradome. Galbūt nori <a href="#">būti pirmas</a>?
             </p> 
-            -->
-            {% include "components/friend-card.html" %}
+            {% endif %}
         </div>
         <div class="right-container">
             <!-- 

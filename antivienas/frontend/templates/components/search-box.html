@@ -7,29 +7,29 @@
         <div class="filter-container">
             <div class="filter">
                 <select name="city" id="city-filter">
-                    <option value="" selected>Miestas</option>
+                    <option value="" {% if not city %} selected {% endif %}>Miestas</option>
                     <option value="">----------</option>
-                    {% for key, value in cities %}
-                    <option value="{{value}}">{{key}}</option>
+                    {% for key, value in cities.items %}
+                    <option value="{{key}}" {% if city == value %} selected {% endif %}>{{value}}</option>
                     {% endfor %}
 
                 </select>
             </div>
             <div class="filter">
                 <select name="gender" id="gender-filter">
-                    <option value="" selected>Lytis</option>
+                    <option value="" {% if gender %} selected {% endif %}>Lytis</option>
                     <option value="">----------</option>
-                    {% for key, value in genders %}
-                    <option value="{{value}}">{{key}}</option>
+                    {% for key, value in genders.items %}
+                    <option value="{{key}}" {% if value == gender %} selected {% endif %}>{{value}}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="filter">
                 <select name="filter-by" id="gender-filter">
-                    <option value="" selected>Pirmenybė</option>
+                    <option value="" {% if not sort_by %} selected {% endif %}>Pirmenybė</option>
                     <option value="">----------</option>
-                    <option value="age_up">Jaunausi</option>
-                    <option value="age_down">Seniausi</option>
+                    <option value="age_up" {% if sort_by == 'age_up' %} selected {% endif %}>Jaunausi</option>
+                    <option value="age_down" {% if sort_by == 'age_down' %} selected {% endif %}>Seniausi</option>
                 </select>
             </div>
         </div>
