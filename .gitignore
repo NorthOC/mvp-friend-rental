@@ -4,7 +4,7 @@
 *.pyc
 __pycache__
 db.sqlite3
-media
+antivienas/media/user_uploads
 
 # Backup files # 
 *.bak 

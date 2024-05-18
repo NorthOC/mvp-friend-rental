@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from antivienas.backend import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +29,4 @@ urlpatterns = [
     path("profilis/<int:user_id>/", views.profile_page, name="profile"),
     path("profilis/<int:user_id>/atnaujinti", views.profile_update_action, name="profile-update"),
     path("susitikimai/", views.meeting_page, name="meeting-page")
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

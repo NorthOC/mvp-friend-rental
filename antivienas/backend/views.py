@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from antivienas.database.models import CityOfService, User, Genders, FriendSetting
+import os
 
 #GLOBAL VARS
 CITY_CHOICES = dict((value, key) for key, value in CityOfService.choices)
@@ -66,6 +67,8 @@ def register_page(request):
         post_data['username'] = post_data['email']
         post_data['password1'] = post_data['password']
         post_data['password2'] = post_data['password']
+        post_data['city'] = CITY_CHOICES[post_data['city']]
+        post_data['gender'] = GENDERS[post_data['gender']]
 
 
 
@@ -155,9 +158,11 @@ def profile_update_action(request, user_id):
         post_data['gender'] = GENDERS[request.POST.get('gender')]
         post_data['education'] = EDU_CHOICES[request.POST.get('education')]
         post_data['personality_type'] = PERSONALITY_TYPES[request.POST.get('personality_type')]
-        form = UserProfileUpdateForm(data=post_data, instance=request.user)
+        form = UserProfileUpdateForm(data=post_data, files=request.FILES, instance=request.user)
         
         if form.is_valid():
+            print(request.user.img_one.path)
+            print(User._meta.get_field('img_one').get_default())
             user = form.save(commit=False)
             user.save()
         else:

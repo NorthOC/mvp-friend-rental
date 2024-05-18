@@ -1,7 +1,7 @@
 {% load static %}
 <div class="friend-container">
     <div class="left-part">
-        <a href="{% url 'profile' user.friend.pk %}"><img src="{% static 'assets/user-no-avatar.png' %}" alt=""></a>
+        <a href="{% url 'profile' user.friend.pk %}"><img src="{{ user.friend.img_one.url }}" alt=""></a>
         <div class="level-container">
             <p class="level" style="background-color: var(--blue);">Veteranas</p>
         </div>

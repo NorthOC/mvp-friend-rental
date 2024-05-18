@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
+from django.core.files.storage import FileSystemStorage
 
 class CityOfService(models.TextChoices):
     """ Susitikimo vietos """
@@ -74,6 +75,20 @@ class Genders(models.TextChoices):
     VYRAS = "Vyras"
     MOTERIS = "Moteris"
 
+class OverwriteStorage(FileSystemStorage):
+
+    def get_available_name(self, name, max_length=None):
+        self.delete(name)
+        return name
+    
+    def _save(self, name, content):
+        self.delete(name)
+        return super(OverwriteStorage, self)._save(name, content)
+
+def upload_img_one(instance, filename):
+    extension = filename.split(".")[-1]
+    return f"user_uploads/user_{instance.pk}/1.{extension}"
+
 def user_img_upload_path(instance, filename):
     return f"user_uploads/user_{instance.pk}/{filename}"
 
@@ -121,7 +136,7 @@ class User(AbstractUser):
     education =         models.CharField(max_length=15, choices=EducationChoices, blank=True, null=True)
     height_cm =         models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(300)])
 
-    img_one =           models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
+    img_one =           models.ImageField(upload_to=upload_img_one, default="/user-no-avatar.png", storage=OverwriteStorage())
     img_two =           models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
     img_three =         models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
 

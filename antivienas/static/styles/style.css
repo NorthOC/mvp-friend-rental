@@ -687,7 +687,8 @@ main{
     margin: 10px auto;
 }
 .modal input[type='file']{
-    margin-top: 20px;
+    max-width: 180px;
+    display: block;
 }
 .modal .profile-field{
     display: flex;
@@ -810,6 +811,8 @@ form .flex-row{
     display: flex;
     flex-direction: column;
     gap: 5px;
+    height: 100%;
+    justify-content: space-evenly;
 }
 .profile-manager .info-container{
     display: flex;
