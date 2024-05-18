@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .forms import MyUserCreationForm
+from .forms import MyUserCreationForm, UserProfileUpdateForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -9,7 +9,9 @@ from antivienas.database.models import CityOfService, User, Genders, FriendSetti
 #GLOBAL VARS
 CITY_CHOICES = dict((value, key) for key, value in CityOfService.choices)
 GENDERS = dict((value, key) for key, value in Genders.choices)
-
+COLORS = dict((value, key) for key, value in User.InterestColorHexes.choices)
+PERSONALITY_TYPES = dict((value, key) for key, value in User.PersonalityTypes.choices)
+EDU_CHOICES = dict((value, key) for key, value in User.EducationChoices.choices)
 
 # Create your views here.
 
@@ -61,36 +63,48 @@ def register_page(request):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
+        post_data['username'] = post_data['email']
         post_data['password1'] = post_data['password']
         post_data['password2'] = post_data['password']
+
+
 
         form = MyUserCreationForm(post_data)
         if form.is_valid():
             user = form.save(commit=False)
+            user.username = user.email.lower()
             user.email = user.email.lower()
-            user.save()
-            login(request, user)
-            return redirect('index')
+            try:
+                user.save()
+            except:
+                print("REGISTER ERROR")
+                print("Nice try apple pie")
+            else:
+                login(request, user)
+                return redirect('index')
         else:
             print("REGISTER ERROR")
             print(form.errors.as_text)
 
-    return render(request, template, {'form': form, 'cities': CITY_CHOICES})
+    return render(request, template, {'form': form, 'cities': CITY_CHOICES, 'genders': GENDERS})
 
 def login_page(request):
     """login part"""
     template = "pages/login.html"
 
+    if request.user.is_authenticated:
+        return redirect('index')
+
     if request.method == 'POST':
-        email = request.POST.get('email').lower()
+        username = request.POST.get('email').lower()
         password = request.POST.get('password')
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username=username)
         except:
             messages.error(request, 'User does not exist')
 
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
@@ -108,8 +122,47 @@ def logout_action(request):
 def profile_page(request, user_id):
     """viewing of a user/friend profile"""
     template = "pages/profile.html"
-    context = {"user_id": user_id}
+    context = {'colors':COLORS, 
+               'cities': CITY_CHOICES, 
+               'educations':EDU_CHOICES, 
+               'genders':GENDERS,
+               'personality_types': PERSONALITY_TYPES}
+
+    try:
+        user = User.objects.get(pk=user_id)
+        context["user"] = user
+    except:
+        return redirect("index")
+    
+    if user.gender == Genders.VYRAS:
+        context['text_ending'] = "as"
+    else:
+        context['text_ending'] = "ė"
+    
+    try:
+        friend_params = FriendSetting.objects.get(friend=user)
+        context["friend_params"] = friend_params
+    except:
+        pass
+
     return render(request, template, context)
+
+@login_required
+def profile_update_action(request, user_id):
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        post_data['city'] = CITY_CHOICES[request.POST.get('city')]
+        post_data['gender'] = GENDERS[request.POST.get('gender')]
+        post_data['education'] = EDU_CHOICES[request.POST.get('education')]
+        post_data['personality_type'] = PERSONALITY_TYPES[request.POST.get('personality_type')]
+        form = UserProfileUpdateForm(data=post_data, instance=request.user)
+        
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+        else:
+            print(form.errors.as_data)
+    return redirect('profile', request.user.pk)
 
 def meeting_page(request):
     """for managing user/friend meetings"""

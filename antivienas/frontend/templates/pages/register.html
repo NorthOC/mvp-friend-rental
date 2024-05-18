@@ -38,18 +38,19 @@
                             <div class="field">
                                 <label for="city">Susitikimo vieta:</label>
                                 <select name="city" id="" required>
-                                    <option value="" disabled></option>
-                                    {% for key, value in cities %}
-                                    <option value="{{value}}">{{key}}</option>
+                                    <option value="" disabled selected></option>
+                                    {% for key, value in cities.items %}
+                                    <option value="{{key}}">{{value}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="field">
                                 <label for="gender">Lytis:</label>
                                 <select name="gender" id="gender" required>
-                                    <option value="" disabled></option>
-                                    <option value="vyr">Vyras</option>
-                                    <option value="mot">Moteris</option>
+                                    <option value="" disabled selected></option>
+                                    {% for key, value in genders.items %}
+                                    <option value="{{key}}">{{value}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>

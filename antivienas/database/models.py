@@ -96,13 +96,16 @@ class User(AbstractUser):
         BLUE =      "#B2D8EE", "Blue"
         GREEN =     "#B8F2C1", "Green"
         PURPLE =    "#F1B8F2", "Purple"
+        YELLOW =    "#F6EAA5", "Yellow"
+    
+    class EducationChoices(models.TextChoices):
+        PAGRINDINIS = "Pagrindinis"
+        VIDURINIS = "Vidurinis"
+        AUKSTASIS = "Aukštasis"
+        AUKSTESNYSIS = "Aukštesnysis"
+        PRADINIS = "Pradinis"
 
-    # leidžia prisijungti naudojant el. paštą
-    username =      None
-    email =         models.EmailField(unique=True)
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-
+        
     # ID verifikavimui
     is_id_verified =    models.BooleanField(default=False)
     id_img =            models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
@@ -115,6 +118,7 @@ class User(AbstractUser):
     description =       models.TextField(max_length=5000, null=True, blank=True)
     personality_type =  models.CharField(max_length=10, choices=PersonalityTypes, null=True, blank=True)
     gender =            models.CharField(max_length=10, choices=Genders, blank=True, null=True)
+    education =         models.CharField(max_length=15, choices=EducationChoices, blank=True, null=True)
     height_cm =         models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(300)])
 
     img_one =           models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
@@ -137,6 +141,10 @@ class User(AbstractUser):
     @property
     def age(self):
         return int((datetime.now().date() - self.birthday).days / 365.25)
+    
+    @property
+    def short_description(self):
+        return self.description
 
 class FriendSetting(models.Model):
     """
@@ -151,10 +159,10 @@ class FriendSetting(models.Model):
     account_holder_details =    models.CharField(max_length=200, blank=True, null=True)
 
     class LvlOfExperience(models.IntegerChoices):
-        NEWBIE      = 1, "Newbie"       # pradinis lygis
-        EXPERIENCED = 2, "Experienced"  # po 2 sėkmingų užsakymų
-        VETERAN     = 3, "Veteran"      # po 10 sėkmingų užsakymų
-        EXPERT      = 4, "Expert"       # specialus lygis psichologams
+        NEWBIE      = 1, "Naujokas"       # pradinis lygis
+        EXPERIENCED = 2, "Patyręs"  # po 2 sėkmingų užsakymų
+        VETERAN     = 3, "Veteranas"      # po 10 sėkmingų užsakymų
+        EXPERT      = 4, "Ekspertas"       # specialus lygis psichologams
     
     level =     models.SmallIntegerField(choices=LvlOfExperience, default=LvlOfExperience.NEWBIE)
     created =   models.DateTimeField(auto_now_add=True)

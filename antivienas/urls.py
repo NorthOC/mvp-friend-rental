@@ -25,5 +25,6 @@ urlpatterns = [
     path("prisijungti/", views.login_page, name="login"),
     path("atsijungti/", views.logout_action, name="logout"),
     path("profilis/<int:user_id>/", views.profile_page, name="profile"),
+    path("profilis/<int:user_id>/atnaujinti", views.profile_update_action, name="profile-update"),
     path("susitikimai/", views.meeting_page, name="meeting-page")
 ]
