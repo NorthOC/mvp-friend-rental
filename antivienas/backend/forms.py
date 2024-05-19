@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
-from antivienas.database.models import User, FriendSetting, Order
+from antivienas.database.models import User, FriendSetting, Order, Dispute
 from django import forms
 
 class MyUserCreationForm(UserCreationForm):
@@ -22,3 +22,13 @@ class MeetingCreationForm(ModelForm):
     class Meta:
         model = Order
         fields  = ['meeting_day', 'meeting_hour', 'no_of_hours', 'meeting_place', 'comment', 'total_price', 'user', 'friend']
+
+class MeetingCancelForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = ['cancel_reason', 'order_status']
+
+class CreateDisputeForm(ModelForm):
+    class Meta:
+        model = Dispute
+        fields = ['user_comment', 'friend_comment', 'order']

@@ -221,7 +221,7 @@ class Order(models.Model):
 
     user =          models.ForeignKey(User, on_delete=models.DO_NOTHING)
     friend =        models.ForeignKey(FriendSetting, on_delete=models.DO_NOTHING)
-    meeting_day =   models.DateField(validators=[MinValueValidator(dt.date.today() + dt.timedelta(days=1))])
+    meeting_day =   models.DateField(validators=[MinValueValidator(dt.date.today())])
     meeting_hour =  models.CharField(max_length=6, choices=MeetingHours)
     no_of_hours =   models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(72)])
     meeting_place = models.CharField(max_length=300)
@@ -256,8 +256,8 @@ class Dispute(models.Model):
     Skundų lentelė
     """
     order =             models.ForeignKey(Order, on_delete=models.DO_NOTHING)
-    user_comment =      models.TextField(max_length=2000, blank=True, null=True)
-    friend_comment =    models.TextField(max_length=2000, blank=True, null=True)
+    user_comment =      models.TextField(max_length=2000, blank=True)
+    friend_comment =    models.TextField(max_length=2000, blank=True)
     is_solved =         models.BooleanField(default=False)
     in_review =         models.BooleanField(default=False)
     created =           models.DateTimeField(auto_now_add=True)

@@ -238,7 +238,7 @@
     <script>
         let date = new Date();
         let meeting_date = document.getElementById("meeting-day");
-        date.setDate(date.getDate() + 1)
+        date.setDate(date.getDate())
         meeting_date.min = date.toISOString().split('T')[0];
         meeting_date.value = date.toISOString().split('T')[0];
         

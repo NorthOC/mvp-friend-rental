@@ -48,12 +48,19 @@
                         <td class="order-price">{{order.total_price}}€</td>
                         {% if order.order_status == 1 and request.user == order.user %}
 
-                        <td class="order-status"><p>Susitikimas laukia patvirtinimo! Jums nieko daryti nereikia.</p><br><form action="/cancel" method="post" class="table-form"><input type="hidden" name="pk" value="{{ order.pk }}"><button type="submit" class="btn"><svg class="cancel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg> Atšaukti</button></form><div class="alert-color-box blue"></div></td>
+                        <td class="order-status"><p>Susitikimas laukia patvirtinimo! Jums nieko daryti nereikia.</p><br>
+                            <form action="{% url 'delete-meeting' %}" method="post" class="table-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="pk" value="{{ order.pk }}">
+                                <button type="submit" class="btn">
+                                    <svg class="cancel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/>
+                                    </svg> Atšaukti</button></form><div class="alert-color-box blue"></div></td>
                         
                         {% elif order.order_status == 1 and request.user == order.friend.friend %}
 
                         <td class="order-status"><p>Naujas susitikimas laukia jūsų patvirtinimo!</p><br>
-                            <form action="" method="post" class="table-form">
+                            <form action="{% url 'confirm-meeting' %}" method="post" class="table-form">
+                                {% csrf_token %}
                                 <input type="hidden" name="pk" value="{{order.pk}}"><button class="btn">
                                     <svg class="accept-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                                         <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
@@ -80,85 +87,65 @@
                     {% endif %}
                 </table>
                 <div id="inactive-meeting-expander" class="meeting-expander" @click="inactive_expanded = ! inactive_expanded">
-                    <h2>Ankstesni susitikimai (36)</h2>
+                    <h2>Ankstesni susitikimai ({{inactive_orders.count}})</h2>
                     <svg class="closed-icon" x-show="!inactive_expanded" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
                     <svg class="open-icon" x-show="inactive_expanded" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
                 </div>
+                {% if inactive_orders %}
                 <div id="inactive-meetings" x-show="inactive_expanded" x-collapse>
                     <table id="active-meetings" x-show="inactive_expanded" x-collapse>
                         <tr class="table-head">
-                            <th>Nr.</th>
-                            <th>Vartotojas</th>
+                            <th>Draugas / Užsakovas</th>
                             <th class="meeting-detail-header">Susitikimo detalės</th>
                             <th>Kaina</th>
                             <th class="meeting-status-header">Statusas</th>
                         </tr>
-                        <tr>
-                            <td class="order-number">1</td>
-                            <td class="user-info">Stanislovas T. <img src="{% static 'assets/user-no-avatar.png' %}" alt=""></td>
-                            <td class="meeting-details">
-                                <ul>
-                                    <li><strong>Data:</strong> Kovo 26 d.</li>
-                                    <li><strong>Laikas:</strong> 11:00 val.</li>
-                                    <li><strong>Trukmė:</strong> 2 val.</li>
-                                    <li><strong>Susitikimo vieta:</strong> Utenoje prie Dauniškio Maximos.</li>
-                                    <li><strong>Komentaras: </strong> Eisime pasivaikščioti aplinkui ežerą ir pasikalbėti. Po to būtų visai gerai kažkur nueiti pavalgyti pietų.</li>
-                                </ul>
-                            </td>
-                            <td class="order-price">50€</td>
-                            <td class="order-status"><p>Sėkmingas susitikimas!</p><div class="alert-color-box green"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="order-number">1</td>
-                            <td class="user-info">Stanislovas T. <img src="{% static 'assets/user-no-avatar.png' %}" alt=""></td>
-                            <td class="meeting-details">
-                                <ul>
-                                    <li><strong>Data:</strong> Kovo 26 d.</li>
-                                    <li><strong>Laikas:</strong> 11:00 val.</li>
-                                    <li><strong>Trukmė:</strong> 2 val.</li>
-                                    <li><strong>Susitikimo vieta:</strong> Utenoje prie Dauniškio Maximos.</li>
-                                    <li><strong>Komentaras: </strong> Eisime pasivaikščioti aplinkui ežerą ir pasikalbėti. Po to būtų visai gerai kažkur nueiti pavalgyti pietų.</li>
-                                </ul>
-                            </td>
-                            <td class="order-price">50€</td>
-                            <td class="order-status"><p>Užsakymas buvo apleistas.</p><br>
-                                <div class="alert-color-box gray"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="order-number">1</td>
-                            <td class="user-info">Stanislovas T. <img src="{% static 'assets/user-no-avatar.png' %}" alt=""></td>
-                            <td class="meeting-details">
-                                <ul>
-                                    <li><strong>Data:</strong> Kovo 26 d.</li>
-                                    <li><strong>Laikas:</strong> 11:00 val.</li>
-                                    <li><strong>Trukmė:</strong> 2 val.</li>
-                                    <li><strong>Susitikimo vieta:</strong> Utenoje prie Dauniškio Maximos.</li>
-                                    <li><strong>Komentaras: </strong> Eisime pasivaikščioti aplinkui ežerą ir pasikalbėti. Po to būtų visai gerai kažkur nueiti pavalgyti pietų.</li>
-                                </ul>
-                            </td>
-                            <td class="order-price">50€</td>
-                            <td class="order-status">
-                                <p>Užsakymas buvo atšauktas.</p><br>
-                                <p><strong>Priežąstis: </strong> Netinka laikas. Prašome paderinti kitai dienai.</p>
-                                <div class="alert-color-box gray"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="order-number">1</td>
-                            <td class="user-info">Stanislovas T. <img src="{% static 'assets/user-no-avatar.png' %}" alt=""></td>
-                            <td class="meeting-details">
-                                <ul>
-                                    <li><strong>Data:</strong> Kovo 26 d.</li>
-                                    <li><strong>Laikas:</strong> 11:00 val.</li>
-                                    <li><strong>Trukmė:</strong> 2 val.</li>
-                                    <li><strong>Susitikimo vieta:</strong> Utenoje prie Dauniškio Maximos.</li>
-                                    <li><strong>Komentaras: </strong> Eisime pasivaikščioti aplinkui ežerą ir pasikalbėti. Po to būtų visai gerai kažkur nueiti pavalgyti pietų.</li>
-                                </ul>
-                            </td>
-                            <td class="order-price">50€</td>
-                            <td class="order-status">
-                                <p>Apskųstas susitikimas.</p><br>
-                                <div class="alert-color-box red"></div></td>
-                        </tr>
+                    {% for order in inactive_orders %}
+                    <tr>
+                        <td class="user-info"><a href="{% url 'profile' order.friend.friend.pk %}" class="upper"><span>{{order.friend.friend.first_name}} {{order.friend.friend.last_name}}</span><img src="{{order.friend.friend.img_one.url}}" alt=""></a><a href="{% url 'profile' order.user.pk %}" class="lower"><span>{{order.user.first_name}} {{order.user.last_name}}</span><img src="{{order.user.img_one.url}}" alt=""></a></td>
+                        <td class="meeting-details">
+                            <ul>
+                                <li><strong>Data:</strong> {{order.lithuanian_date}}</li>
+                                <li><strong>Laikas:</strong> {{order.meeting_hour}} val.</li>
+                                <li><strong>Trukmė:</strong> {{order.no_of_hours}} val.</li>
+                                <li><strong>Susitikimo vieta:</strong> {{order.meeting_place}}</li>
+                                <li><strong>Komentaras: </strong> {{order.comment}}</li>
+                            </ul>
+                        </td>
+                        <td class="order-price">{{order.total_price}}€</td>
+
+                        {% if order.order_status == 3 %}
+
+                        <td class="order-status"><p>Sėkmingas susitikimas!</p>
+                            <div class="table-form">
+                                <button type="button" class="btn spawn-modal" x-on:click="isModalOpen = true, orderID = {{order.pk}}">
+                                    <svg class="cancel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                        <path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/>
+                                    </svg> Apskųsti
+                                </button>
+                            </div>
+                            <div class="alert-color-box green"></div></td>
+
+                        {% elif order.order_status == 4%}
+                        <td class="order-status">
+                            <p>Užsakymas buvo atšauktas.</p><br>
+                            <p><strong>Priežąstis: </strong>{{order.cancel_reason}}</p>
+                            <div class="alert-color-box gray"></div></td>
+
+                        
+                        {% elif order.order_status == 5 %}    
+                        <td class="order-status"><p>Užsakymas buvo apleistas.</p><br>
+                            <div class="alert-color-box gray"></div></td>
+                        
+                        {% elif order.order_status == 6 %}    
+                        <td class="order-status">
+                            <p>Apskųstas susitikimas.</p><br>
+                            <div class="alert-color-box red"></div></td>
+                        {% endif %}
+                    
+
+                    {% endfor %}
+                    {% endif %}
                     </table>
                 </div>
             </div>
@@ -175,10 +162,11 @@
                     >
                         <div class="model-inner">
                         <div class="modal-header">
-                            <h3>Ar tikrai norite atšaukti susitikimą?</h3>
+                            <h3>Ar tikrai norite atlikti šį veiksmą?</h3>
                             <button aria-label="Close" x-on:click="isModalOpen=false" id="close-modal">✖</button>
                         </div>
-                        <form action="" method="post">
+                        <form action="{% url 'cancel-meeting' %}" method="post">
+                            {% csrf_token %}
                             <input type="hidden" name="pk" x-model="orderID">
                             <div class="shell">
                                 <textarea name="cancel_reason" id="reason" placeholder="Paaiškinimas vartotojui" maxlength="100"></textarea>

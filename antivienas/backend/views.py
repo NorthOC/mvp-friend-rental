@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .forms import MyUserCreationForm, UserProfileUpdateForm, FriendSettingsUpdateForm
-from .forms import MeetingCreationForm
+from .forms import MeetingCreationForm, MeetingCancelForm, CreateDisputeForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from antivienas.database.models import CityOfService, User, Genders, FriendSetting, Order
+import datetime as dt
 
 #GLOBAL VARS
 CITY_CHOICES = dict((value, key) for key, value in CityOfService.choices)
@@ -226,7 +227,15 @@ def create_meeting_action(request):
 
             if form.is_valid():
                 meeting = form.save(commit=False)
-                meeting.save()
+                #allowed to create meeting 3 hours before
+                time_now = dt.datetime.now() + dt.timedelta(hours=3)
+                order_hours = meeting.meeting_hour.split(":")
+                order_date = dt.datetime.combine(meeting.meeting_day,dt.time(int(order_hours[0]), int(order_hours[1])))
+                if time_now > order_date:
+                    messages.error(request, "TimeError: Minimum time to before meeting is 3 hours")
+                    redirect('profile', friend_settings.friend.pk)
+                else:
+                    meeting.save()
                 return redirect('meeting-page')
             else:
                 print(form.errors.as_data)
@@ -247,20 +256,34 @@ def meeting_page(request):
                                          (Q(order_status = Order.OrderStatuses.INITIATED) |
                                          Q(order_status = Order.OrderStatuses.CONFIRMED))
                                          )
-        inactive_orders = Order.objects.filter(Q(user=request.user) &
-                                         (Q(order_status = Order.OrderStatuses.COMPLETE) |
-                                         Q(order_status = Order.OrderStatuses.CANCELLED) |
-                                         Q(order_status = Order.OrderStatuses.DISPUTED) |
-                                         Q(order_status = Order.OrderStatuses.ABANDONED))
-                                         )
     else:
         active_orders = Order.objects.filter((Q(friend=friend) | 
                                          Q(user=request.user)) &
                                          (Q(order_status = Order.OrderStatuses.INITIATED) |
                                          Q(order_status = Order.OrderStatuses.CONFIRMED))
                                          )
+    
+    # update meeting statuses with time
+    time_now = dt.datetime.now()
+    for order in active_orders:
+        order_hours = order.meeting_hour.split(":")
+        order_date = dt.datetime.combine(order.meeting_day,dt.time(int(order_hours[0]), int(order_hours[1])))
+        if time_now > order_date and order.order_status == Order.OrderStatuses.CONFIRMED:
+            order.order_status = Order.OrderStatuses.COMPLETE
+            order.save()
+        elif time_now > order_date and order.order_status == Order.OrderStatuses.INITIATED:
+            order.order_status = Order.OrderStatuses.ABANDONED
+            order.save()
+
+    try:
         inactive_orders = Order.objects.filter((Q(friend=friend) | 
                                          Q(user=request.user)) &
+                                         (Q(order_status = Order.OrderStatuses.COMPLETE) |
+                                         Q(order_status = Order.OrderStatuses.DISPUTED) |
+                                         Q(order_status = Order.OrderStatuses.ABANDONED))
+                                         )
+    except:
+        inactive_orders = Order.objects.filter(Q(user=request.user) &
                                          (Q(order_status = Order.OrderStatuses.COMPLETE) |
                                          Q(order_status = Order.OrderStatuses.CANCELLED) |
                                          Q(order_status = Order.OrderStatuses.DISPUTED) |
@@ -268,6 +291,72 @@ def meeting_page(request):
                                          )
         
     context['active_orders'] = active_orders.order_by("meeting_day")
-    context['inactive_orders'] = inactive_orders.order_by("meeting_day")
+    context['inactive_orders'] = inactive_orders.order_by("-meeting_day")
     
     return render(request, template, context)
+
+@login_required
+def delete_meeting_action(request):
+    if request.method == "POST":
+        try:
+            order = Order.objects.get(pk=request.POST.get('pk'))
+        except:
+            return redirect("meeting-page")
+        
+        if order.order_status == Order.OrderStatuses.INITIATED and request.user == order.user:
+            order.delete()
+    
+    return redirect("meeting-page")
+
+@login_required
+def confirm_meeting_action(request):
+    if request.method == "POST":
+        try:
+            order = Order.objects.get(pk=request.POST.get('pk'))
+        except:
+            return redirect("meeting-page")
+        
+        if order.order_status == Order.OrderStatuses.INITIATED and request.user == order.friend.friend:
+            order.order_status = Order.OrderStatuses.CONFIRMED
+            order.save()
+    
+    return redirect("meeting-page")
+
+@login_required
+def cancel_meeting_action(request):
+    if request.method == "POST":
+        try:
+            order = Order.objects.get(pk=request.POST.get('pk'))
+        except:
+            return redirect("meeting-page")
+        
+        post_data = request.POST.copy()
+
+        if request.POST.get('cancel_reason'):
+            post_data['cancel_reason'] = request.POST.get('cancel_reason')
+
+        if order.order_status == Order.OrderStatuses.INITIATED and request.user == order.friend.friend:
+            post_data['order_status'] = Order.OrderStatuses.CANCELLED
+            form = MeetingCancelForm(data=post_data, instance=order)
+            if form.is_valid:
+                form.save()
+                
+        elif order.order_status == Order.OrderStatuses.COMPLETE and request.user == order.friend.friend:
+            order.order_status = Order.OrderStatuses.DISPUTED
+            order.save()
+            post_data['friend_comment'] = request.POST.get("cancel_reason") if request.POST.get("cancel_reason") != None else ""
+            post_data['order'] = order
+            form = CreateDisputeForm(post_data)
+            if form.is_valid():
+                form.save()
+
+        elif order.order_status == Order.OrderStatuses.COMPLETE and request.user == order.user:
+            order.order_status = Order.OrderStatuses.DISPUTED
+            order.save()
+            post_data['user_comment'] = request.POST.get("cancel_reason") if request.POST.get("cancel_reason") != None else ""
+            post_data['order'] = order
+            form = CreateDisputeForm(post_data)
+            if form.is_valid():
+                form.save()
+
+    return redirect("meeting-page")
