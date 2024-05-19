@@ -696,6 +696,13 @@ main{
     margin-bottom: 20px;
     position: relative;
 }
+.modal .aligner .profile-field{
+    width: 100%;
+}
+.modal textarea{
+    height: 300px;
+    resize: none    ;
+}
 .modal .meeting-field{
     display: flex;
     flex-direction: column;
@@ -724,6 +731,23 @@ main{
 }
 .modal .profile-form input[type='number']{
     max-width: 65px;
+}
+.friend-settings-form input[type="text"],.friend-settings-form input[type="number"]{
+    max-width: 100px;
+    width: 100%;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: black;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.friend-settings-form input[type="checkbox"]{
+    width: 19px;
+    height: 19px;
 }
 form .color-box{
     width: 15px;
@@ -786,6 +810,7 @@ form .flex-row{
 }
 .meeting-form .bolder{
     font-size: 20px;
+    font-weight: 600;
 }
 /* PROFILE MANAGER */
 .middle-container .profile-manager{

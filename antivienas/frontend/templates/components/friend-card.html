@@ -3,7 +3,7 @@
     <div class="left-part">
         <a href="{% url 'profile' user.friend.pk %}"><img src="{{ user.friend.img_one.url }}" alt=""></a>
         <div class="level-container">
-            <p class="level" style="background-color: var(--blue);">Veteranas</p>
+            <p class="level" style="background-color: var(--blue);">{{ user.get_level_display }}</p>
         </div>
     </div>
     <div class="right-part">

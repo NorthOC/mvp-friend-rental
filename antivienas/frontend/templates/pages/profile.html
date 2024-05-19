@@ -10,7 +10,7 @@
     <title>Draugai | Anti Vienas</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body x-data="{'isIDModalOpen': false, 'isEditModalOpen': false, 'isOrderModalOpen': false}" x-on:keydown.escape="isIDModalOpen=false; isEditModalOpen=false; isOrderModalOpen=false">
+<body x-data="{'isIDModalOpen': false, 'isEditModalOpen': false, 'isOrderModalOpen': false, 'isSettingsModalOpen':false}" x-on:keydown.escape="isIDModalOpen=false; isEditModalOpen=false; isOrderModalOpen=false; isSettingsModalOpen=false">
     {% include "components/top-nav.html" %}
     <main class="main-section main-double-split">
         <div class="left-container">
@@ -119,11 +119,11 @@
                 </div>
                 <hr>
                 <div class="description-container">
-                    <h2>Aprašymas</h2>
                     {% if user.description %}
+                    <h2>Aprašymas</h2>
                     {{ user.description|linebreaks }}
                     {% else %}
-                    <p style="font-style: italic;">Aprašymo nėra</p>
+                    <p style="font-style: italic; margin: 0px 10px;">Aprašymo nėra</p>
                     {% endif %}
                 </div>
                 <div class="btn-container">
@@ -133,7 +133,10 @@
                     <!-- {% if request.user == user %}
                     <button type="button" id="order-btn" x-on:click="isIDModalOpen = true">Patvirtinti tapatybę</button>
                     {% endif %} -->
-                    {% if friend_params and request.user %}
+                    {% if friend_params.friend == request.user %}
+                    <button type="button" id="friend-setting-btn" x-on:click="isSettingsModalOpen = true">Draugo nustatymai</button>
+                    {% endif %}
+                    {% if friend_params and request.user and request.user != friend_params.friend %}
                         {% if request.user.is_authenticated %}
                     <button type="button" id="order-btn" x-on:click="isOrderModalOpen = true">Siūlyti susitikti</button>
                         {% else %}
@@ -144,7 +147,7 @@
             </div>
         </div>
     </main>
-    <div class="overlay" x-show="isIDModalOpen || isEditModalOpen || isOrderModalOpen" x-cloak></div>
+    <div class="overlay" x-show="isIDModalOpen || isEditModalOpen || isOrderModalOpen || isSettingsModalOpen" x-cloak></div>
     <!-- {% if request.user == user %}
     <div
         class="modal"
@@ -178,7 +181,7 @@
         </div>
     </div>
     {% endif %} -->
-    {% if friend_params and request.user.is_authenticated %}
+    {% if friend_params and request.user.is_authenticated and request.user != friend_params.friend  %}
     <div
         class="modal"
         role="dialog"
@@ -193,57 +196,38 @@
                 <button aria-label="Close" x-on:click="isOrderModalOpen=false" id="close-modal">✖</button>
             </div>
             <small class="explainer">Po užklausos išsiuntimo, draugas turės ją peržiūrėti ir patvirtinti. Taigi, prieš susitikimą, būtinai patikrinkite, ar jūsų užsakymas buvo patvirtintas.</small>
-            <form action="" class="meeting-form" method="post">
-                <input type="hidden" name="user-id" value="{{user.id}}">
+            <form action="{% url 'create-meeting' %}" class="meeting-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{friend_params.friend.id}}">
                     <div class="meeting-field">
-                        <label for="meeting-day">Susitikimo diena:</label>
-                        <input type="date" name="meeting-day" id="meeting-day">
+                        <label for="meeting_day">Susitikimo diena:</label>
+                        <input type="date" name="meeting_day" id="meeting-day">
                     </div>
                     <div class="meeting-field">
-                        <label for="meeting-hour">Valanda:</label>
-                        <select name="meeting-hour" id="">
-                            <option value="0900">09:00</option>
-                            <option value="0930">09:30</option>
-                            <option value="1000">10:00</option>
-                            <option value="1030">10:30</option>
-                            <option value="1100">11:00</option>
-                            <option value="1130">11:30</option>
-                            <option value="1200">12:00</option>
-                            <option value="1230">12:30</option>
-                            <option value="1300">13:00</option>
-                            <option value="1330">13:30</option>
-                            <option value="1400">14:00</option>
-                            <option value="1430">14:30</option>
-                            <option value="1500">15:00</option>
-                            <option value="1530">15:30</option>
-                            <option value="1600">16:00</option>
-                            <option value="1630">16:30</option>
-                            <option value="1700">17:00</option>
-                            <option value="1730">17:30</option>
-                            <option value="1800">18:00</option>
-                            <option value="1830">18:30</option>
-                            <option value="1900">19:00</option>
-                            <option value="1930">19:30</option>
-                            <option value="2000">20:00</option>
+                        <label for="meeting_hour">Valanda:</label>
+                        <select name="meeting_hour" id="">
+                            {% for key, value in meeting_hours.items %}
+                            <option value="{{key}}">{{value}}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="meeting-field">
-                        <label>Trukmė val.</label>
-                        <input type="number" name="meeting-length" id="meeting-length" min="1" max="336" value="1">
+                        <label for="no_of_hours">Trukmė val.</label>
+                        <input type="number" name="no_of_hours" id="meeting-length" min="1" max="336" value="1" required onkeydown="return event.key != 'Enter';">
                     </div>
                 <div class="meeting-field">
-                    <label for="meeting-place">Susitikimo vieta:</label>
-                    <input type="text" name="meeting-place" id="meeting-address" placeholder="adresas ir detalės" required>
+                    <label for="meeting_place">Susitikimo vieta:</label>
+                    <input type="text" name="meeting_place" id="meeting-address" placeholder="adresas ir detalės" required onkeydown="return event.key != 'Enter';">
                 </div>
-                <label for="meeting-comment">Komentaras:</label>
-                <textarea name="meeting-comment" id="comment" placeholder="ką veiksite susitikimo metu" required></textarea>
+                <label for="comment">Komentaras:</label>
+                <textarea name="comment" id="comment" placeholder="ką veiksite susitikimo metu" required></textarea>
                 <hr>
                 <div class="meeting-field-row">
-                    <label class="bolder"><strong>Galutinė kaina: </strong></label>
-                    <input type="text" disabled id="meeting-price" class="bolder">
+                    <label class="bolder" for="total_price">Galutinė kaina: </label>
+                    <input type="text" name="total_price" value="0" disabled id="meeting-price" class="bolder">
+                    <input type="hidden" name="total_price" value="0" id="true-meeting-price">
                 </div>
                 <hr>
-
                 <div class="aligner">
                     <button type="submit" class="warning">Teikti užklausą</button>
                     <button aria-label="Close" x-on:click="isOrderModalOpen=false" type="button">Uždaryti</button>
@@ -260,11 +244,14 @@
         
         let meeting_length = document.getElementById("meeting-length");
         let meeting_price = document.getElementById("meeting-price");
-        let user_price = 25;
+        let true_meeting_price = document.getElementById("true-meeting-price");
+        let user_price = parseInt('{{friend_params.price_per_hour}}');
         meeting_price.value = (meeting_length.value * user_price).toString() + " €";
+        true_meeting_price.value = meeting_length.value * user_price
 
         meeting_length.addEventListener("input", ()=>{
             meeting_price.value = (meeting_length.value * user_price).toString() + " €";
+            true_meeting_price.value = meeting_length.value * user_price
         })
 
     </script>
@@ -283,7 +270,7 @@
                 <h3>Profilio duomenys</h3>
                 <button aria-label="Close" x-on:click="isEditModalOpen=false" id="close-modal">✖</button>
             </div>
-            <form action="{% url 'profile-update' request.user.pk %}" method="post" enctype="multipart/form-data" class="profile-form">
+            <form action="{% url 'profile-update' %}" method="post" enctype="multipart/form-data" class="profile-form">
                 {% csrf_token %}
                 <div class="profile-field">
                     <label for="first_name">*Vardas:</label>
@@ -377,9 +364,15 @@
                 <div class="color-picker" id="color-picker-four">
                     {% include 'components/color-boxes.html' %}
                 </div>
-                <div class="frofile-field">
+                <div class="profile-field">
                     <label for="img_one">Profilio nuotrauka:</label>
                     <input type="file" name="img_one" id="">
+                </div>
+                <div class="aligner">
+                    <div class="profile-field">
+                        <label for="description">Aprašymas:</label>
+                        <textarea name="description" id="">{{request.user.description}}</textarea>
+                    </div>
                 </div>
                 <div class="aligner">
                     <button type="submit" class="warning">Atnaujinti</button>
@@ -417,6 +410,39 @@
             };
         })
     </script>
+    {% endif %}
+    {% if friend_params.friend == request.user %}
+        <div
+            class="modal"
+            role="dialog"
+            tabindex="-1"
+            x-show="isSettingsModalOpen"
+            x-on:click.away="isSettingsModalOpen = false"
+            x-cloak
+            >
+                <div class="model-inner">
+                <div class="modal-header">
+                    <h3>Draugo pasiūlymo nustatymai</h3>
+                    <button aria-label="Close" x-on:click="isSettingsModalOpen=false" id="close-modal">✖</button>
+                </div>
+                <small>Pajamų laukelyje nurodykite, kiek norėtumėte uždirbti. Jeigu pasiūlymas nėra viešas, vartotojai jums negalės teikti pasiūlymų susitikti.</small><br><br>
+                <form action="{% url 'friend-settings-update' %}" method="post" class="friend-settings-form">
+                    {% csrf_token %}
+                    <div class="profile-field">
+                        <label for="price_per_hour">Pajamos eur/val.:</label>
+                        <input type="number" name="price_per_hour" id="" min="0" value="{{friend_params.price_per_hour}}" onkeydown="return event.key != 'Enter';">
+                    </div>
+                    <div>
+                        <input type="checkbox" name="is_public" id="" {% if friend_params.is_public%} checked {%endif%}>
+                        <label for="is_public">Matoma viešai</label>
+                    </div>
+                    <div class="aligner">
+                        <button type="submit" class="warning">Atnaujinti</button>
+                        <button aria-label="Close" x-on:click="isSettingsModalOpen=false" type="reset">Uždaryti</button>
+                    </div>
+                </form>
+                </div>
+            </div>
     {% endif %}
 </body>
 </html>
