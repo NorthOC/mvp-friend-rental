@@ -135,6 +135,8 @@
                     {% endif %} -->
                     {% if friend_params.friend == request.user %}
                     <button type="button" id="friend-setting-btn" x-on:click="isSettingsModalOpen = true">Draugo nustatymai</button>
+                    {% elif user == request.user and not friend_params %}
+                    <a href="{% url 'become-friend' %}"><button type="button" id="friend-setting-btn">Tapti draugu</button></a>
                     {% endif %}
                     {% if friend_params and request.user and request.user != friend_params.friend %}
                         {% if request.user.is_authenticated %}

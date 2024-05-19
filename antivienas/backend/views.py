@@ -155,6 +155,13 @@ def profile_page(request, user_id):
     return render(request, template, context)
 
 @login_required
+def become_friend_action(request):
+    
+    FriendSetting.objects.get_or_create(friend=request.user)
+
+    return redirect('profile', request.user.pk)
+
+@login_required
 def profile_update_action(request):
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -182,16 +189,19 @@ def profile_update_action(request):
 def friend_settings_update_action(request):
     if request.method == 'POST':
         
-        friend = FriendSetting.objects.get(friend=request.user)
+        try:
+            friend = FriendSetting.objects.get(friend=request.user)
 
-        if friend:
-            form = FriendSettingsUpdateForm(data=request.POST, instance=friend)
-        
-            if form.is_valid():
-                user = form.save(commit=False)
-                user.save()
-            else:
-                print(form.errors.as_data)
+            if friend:
+                form = FriendSettingsUpdateForm(data=request.POST, instance=friend)
+            
+                if form.is_valid():
+                    user = form.save(commit=False)
+                    user.save()
+                else:
+                    print(form.errors.as_data)
+        except:
+            pass
     return redirect('profile', request.user.pk)
 
 @login_required
@@ -202,9 +212,9 @@ def create_meeting_action(request):
         user_id = request.POST.get('user_id')
         user = User.objects.get(pk=user_id)
         
-        friend_settings = FriendSetting.objects.get(friend=user)
-
-        if not friend_settings:
+        try:
+            friend_settings = FriendSetting.objects.get(friend=user)
+        except:
             return redirect("index")
         
         if request.POST.get('meeting_hour'):

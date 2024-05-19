@@ -28,6 +28,7 @@ urlpatterns = [
     path("atsijungti/", views.logout_action, name="logout"),
     path("profilis/<int:user_id>/", views.profile_page, name="profile"),
     path("profilis/atnaujinti", views.profile_update_action, name="profile-update"),
+    path("tapti-draugu/", views.become_friend_action, name="become-friend"),
     path("profilis/draugo-nustatymai/atnaujinti", views.friend_settings_update_action, name="friend-settings-update"),
     path("susitikimai/", views.meeting_page, name="meeting-page"),
     path("susitikimai/naujas", views.create_meeting_action, name="create-meeting"),
