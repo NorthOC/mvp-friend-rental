@@ -514,6 +514,24 @@ main{
     max-width: 45px;
     border-radius: 50%;
 }
+.manager-container table hr{
+    width: 100%;
+}
+table .user-info>a{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+table .user-info .upper{
+    align-items: baseline;
+    align-self: baseline;
+}
+table .user-info .lower{
+    align-items: end;
+    align-self: end;
+
+}
+
 .manager-container th, .manager-container td{
     padding: 0px 15px 10px 15px;
     vertical-align: top;
@@ -545,6 +563,12 @@ main{
     text-align: center;
 }
 .manager-container .user-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.manager-container table .user-info{
     display: flex;
     flex-direction: column;
     align-items: center;

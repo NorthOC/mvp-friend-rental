@@ -240,4 +240,34 @@ def meeting_page(request):
     """for managing user/friend meetings"""
     template = "pages/meeting-manager.html"
     context = {}
-    return render(request, template)
+    try:
+        friend = FriendSetting.objects.get(friend=request.user)
+    except FriendSetting.DoesNotExist:
+        active_orders = Order.objects.filter(Q(user=request.user) &
+                                         (Q(order_status = Order.OrderStatuses.INITIATED) |
+                                         Q(order_status = Order.OrderStatuses.CONFIRMED))
+                                         )
+        inactive_orders = Order.objects.filter(Q(user=request.user) &
+                                         (Q(order_status = Order.OrderStatuses.COMPLETE) |
+                                         Q(order_status = Order.OrderStatuses.CANCELLED) |
+                                         Q(order_status = Order.OrderStatuses.DISPUTED) |
+                                         Q(order_status = Order.OrderStatuses.ABANDONED))
+                                         )
+    else:
+        active_orders = Order.objects.filter((Q(friend=friend) | 
+                                         Q(user=request.user)) &
+                                         (Q(order_status = Order.OrderStatuses.INITIATED) |
+                                         Q(order_status = Order.OrderStatuses.CONFIRMED))
+                                         )
+        inactive_orders = Order.objects.filter((Q(friend=friend) | 
+                                         Q(user=request.user)) &
+                                         (Q(order_status = Order.OrderStatuses.COMPLETE) |
+                                         Q(order_status = Order.OrderStatuses.CANCELLED) |
+                                         Q(order_status = Order.OrderStatuses.DISPUTED) |
+                                         Q(order_status = Order.OrderStatuses.ABANDONED))
+                                         )
+        
+    context['active_orders'] = active_orders.order_by("meeting_day")
+    context['inactive_orders'] = inactive_orders.order_by("meeting_day")
+    
+    return render(request, template, context)

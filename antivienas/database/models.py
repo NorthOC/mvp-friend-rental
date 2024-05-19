@@ -232,6 +232,24 @@ class Order(models.Model):
     order_status =          models.SmallIntegerField(choices=OrderStatuses, default=OrderStatuses.INITIATED)
     created =               models.DateTimeField(auto_now_add=True)
 
+    @property
+    def lithuanian_date(self):
+        MONTHS = ["Sausio",
+        "Vasario",
+        "Kovo",
+        "Balandžio",
+        "Gegužės",
+        "Birželio",
+        "Liepos",
+        "Rugpjūčio",
+        "Rugsėjo",
+        "Spalio",
+        "Lapkričio",
+        "Gruodžio"]
+    
+        return f"{MONTHS[self.meeting_day.month-1]} {self.meeting_day.day} d. {self.meeting_day.year}m."
+    
+
 
 class Dispute(models.Model):
     """

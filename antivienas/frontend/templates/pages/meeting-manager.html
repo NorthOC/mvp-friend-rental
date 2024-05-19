@@ -21,79 +21,63 @@
         <div class="middle-container">
             <div class="manager-container" x-data="{ active_expanded: true, inactive_expanded: false }">
                 <div id="active-meeting-expander" class="meeting-expander" @click="active_expanded = ! active_expanded">
-                    <h2>Planuojami susitikimai (3)</h2>
+                    <h2>Planuojami susitikimai ({{active_orders.count}})</h2>
                     <svg class="closed-icon" x-show="!active_expanded" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
                     <svg class="open-icon" x-show="active_expanded" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
                 </div>
                 <table id="active-meetings" x-show="active_expanded" x-collapse>
                     <tr class="table-head">
-                        <th>Nr.</th>
-                        <th>Vartotojas</th>
+                        <th>Draugas / Užsakovas</th>
                         <th class="meeting-detail-header">Susitikimo detalės</th>
                         <th>Kaina</th>
                         <th class="meeting-status-header">Statusas</th>
                     </tr>
+                    {% if active_orders %}
+                    {% for order in active_orders %}
                     <tr>
-                        <td class="order-number">1</td>
-                        <td class="user-info">Stanislovas T. <img src="{% static 'assets/user-no-avatar.png' %}" alt=""></td>
+                        <td class="user-info"><a href="{% url 'profile' order.friend.friend.pk %}" class="upper"><span>{{order.friend.friend.first_name}} {{order.friend.friend.last_name}}</span><img src="{{order.friend.friend.img_one.url}}" alt=""></a><a href="{% url 'profile' order.user.pk %}" class="lower"><span>{{order.user.first_name}} {{order.user.last_name}}</span><img src="{{order.user.img_one.url}}" alt=""></a></td>
                         <td class="meeting-details">
                             <ul>
-                                <li><strong>Data:</strong> Kovo 26 d.</li>
-                                <li><strong>Laikas:</strong> 11:00 val.</li>
-                                <li><strong>Trukmė:</strong> 2 val.</li>
-                                <li><strong>Susitikimo vieta:</strong> Utenoje prie Dauniškio Maximos.</li>
-                                <li><strong>Komentaras: </strong> Eisime pasivaikščioti aplinkui ežerą ir pasikalbėti. Po to būtų visai gerai kažkur nueiti pavalgyti pietų.</li>
+                                <li><strong>Data:</strong> {{order.lithuanian_date}}</li>
+                                <li><strong>Laikas:</strong> {{order.meeting_hour}} val.</li>
+                                <li><strong>Trukmė:</strong> {{order.no_of_hours}} val.</li>
+                                <li><strong>Susitikimo vieta:</strong> {{order.meeting_place}}</li>
+                                <li><strong>Komentaras: </strong> {{order.comment}}</li>
                             </ul>
                         </td>
-                        <td class="order-price">50€</td>
-                        <td class="order-status"><p>Užsakymas patvirtintas. Sėkmės susitikime!</p><div class="alert-color-box green"></div></td>
-                    </tr>
-                    <tr>
-                        <td class="order-number">1</td>
-                        <td><a href="" class="user-info">Stanislovas T. <img src="{% static 'assets/user-no-avatar.png' %}" alt=""></a></td>
-                        <td class="meeting-details">
-                            <ul>
-                                <li><strong>Data:</strong> Kovo 26 d.</li>
-                                <li><strong>Laikas:</strong> 11:00 val.</li>
-                                <li><strong>Trukmė:</strong> 2 val.</li>
-                                <li><strong>Susitikimo vieta:</strong> Utenoje prie Dauniškio Maximos.</li>
-                                <li><strong>Komentaras: </strong> Eisime pasivaikščioti aplinkui ežerą ir pasikalbėti. Po to būtų visai gerai kažkur nueiti pavalgyti pietų.</li>
-                            </ul>
-                        </td>
-                        <td class="order-price">50€</td>
-                        <td class="order-status"><p>Susitikimas laukia draugo patvirtinimo! Jums nieko daryti nereikia.</p><br><form action="/cancel" method="post" class="table-form"><input type="hidden" name="order_id" value="1"><button type="submit" class="btn"><svg class="cancel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg> Atšaukti</button></form><div class="alert-color-box blue"></div></td>
-                    </tr>
-                    <tr>
-                        <td class="order-number">1</td>
-                        <td class="user-info">Stanislovas T. <img src="{% static 'assets/user-no-avatar.png' %}" alt=""></td>
-                        <td class="meeting-details">
-                            <ul>
-                                <li><strong>Data:</strong> Kovo 26 d.</li>
-                                <li><strong>Laikas:</strong> 11:00 val.</li>
-                                <li><strong>Trukmė:</strong> 2 val.</li>
-                                <li><strong>Susitikimo vieta:</strong> Utenoje prie Dauniškio Maximos.</li>
-                                <li><strong>Komentaras: </strong> Eisime pasivaikščioti aplinkui ežerą ir pasikalbėti. Po to būtų visai gerai kažkur nueiti pavalgyti pietų.</li>
-                            </ul>
-                        </td>
-                        <td class="order-price">50€</td>
+                        <td class="order-price">{{order.total_price}}€</td>
+                        {% if order.order_status == 1 and request.user == order.user %}
+
+                        <td class="order-status"><p>Susitikimas laukia patvirtinimo! Jums nieko daryti nereikia.</p><br><form action="/cancel" method="post" class="table-form"><input type="hidden" name="pk" value="{{ order.pk }}"><button type="submit" class="btn"><svg class="cancel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg> Atšaukti</button></form><div class="alert-color-box blue"></div></td>
+                        
+                        {% elif order.order_status == 1 and request.user == order.friend.friend %}
+
                         <td class="order-status"><p>Naujas susitikimas laukia jūsų patvirtinimo!</p><br>
                             <form action="" method="post" class="table-form">
-                                <input type="hidden" name="order_id" value="1"><button class="btn">
+                                <input type="hidden" name="pk" value="{{order.pk}}"><button class="btn">
                                     <svg class="accept-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                                         <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
                                     </svg> Patvirtinti
                                 </button>
                             </form>
                             <br>
-                            <form action="" method="post" class="table-form" onsubmit="event.preventDefault(); return false;">
-                                <button type="submit" class="btn spawn-modal" x-on:click="isModalOpen = true, orderID = 1">
+                            <div class="table-form">
+                                <button type="button" class="btn spawn-modal" x-on:click="isModalOpen = true, orderID = {{order.pk}}">
                                     <svg class="cancel-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                                         <path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/>
                                     </svg> Atšaukti
                                 </button>
-                            </form>
+                            </div>
                             <div class="alert-color-box yellow"></div></td>
+
+                        {% elif order.order_status == 2 %}
+                            
+                            <td class="order-status"><p>Užsakymas patvirtintas. Sėkmės susitikime!</p><div class="alert-color-box green"></div></td>
+                        
+                        {% endif %}
                     </tr>
+                    {% endfor %}
+                    {% endif %}
                 </table>
                 <div id="inactive-meeting-expander" class="meeting-expander" @click="inactive_expanded = ! inactive_expanded">
                     <h2>Ankstesni susitikimai (36)</h2>
@@ -195,9 +179,9 @@
                             <button aria-label="Close" x-on:click="isModalOpen=false" id="close-modal">✖</button>
                         </div>
                         <form action="" method="post">
-                            <input type="hidden" name="order-id" x-model="orderID">
+                            <input type="hidden" name="pk" x-model="orderID">
                             <div class="shell">
-                                <textarea name="reason" id="reason" placeholder="Paaiškinimas vartotojui" maxlength="100"></textarea>
+                                <textarea name="cancel_reason" id="reason" placeholder="Paaiškinimas vartotojui" maxlength="100"></textarea>
                                 <div id="text-counter"><small id="counter-num">100</small>/<small id="counter-max">100</small></div>
                             </div>
                             <div class="aligner">
