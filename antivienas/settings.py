@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-pn^pdwqsvwxgzf2g3gtwb^il05$4pt6(@c&w(!+1%d@2y9i@0=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -81,16 +81,9 @@ WSGI_APPLICATION = 'antivienas.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'verceldb',
-        'USER': 'default',
-        'PASSWORD': 'H0NnEuB8bTXl',
-        'HOST': 'ep-flat-poetry-a2c5jup9-pooler.eu-central-1.aws.neon.tech',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
