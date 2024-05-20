@@ -35,4 +35,4 @@ urlpatterns = [
     path("susitikimai/patvirtinti", views.confirm_meeting_action, name="confirm-meeting"),
     path("susitikimai/atsaukti", views.cancel_meeting_action, name="cancel-meeting"),
     path("susitikimai/istrinti", views.delete_meeting_action, name="delete-meeting")
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
