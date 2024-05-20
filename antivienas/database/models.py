@@ -127,7 +127,7 @@ class User(AbstractUser):
 
     # vartotojo duomenys
     profile_type =      models.CharField(max_length=6, choices=ProfileTypes, default=ProfileTypes.USER)
-    birthday =          models.DateField()
+    birthday =          models.DateField(default=dt.date(1998,5,14))
     city =              models.CharField(max_length=15,choices=CityOfService,null=True,blank=True)
     job =               models.CharField(max_length=40, blank=True)
     description =       models.TextField(max_length=5000, blank=True)
