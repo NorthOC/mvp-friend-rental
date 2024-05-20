@@ -81,9 +81,16 @@ WSGI_APPLICATION = 'antivienas.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'verceldb',
+        'USER': 'default',
+        'PASSWORD': 'H0NnEuB8bTXl',
+        'HOST': 'ep-flat-poetry-a2c5jup9-pooler.eu-central-1.aws.neon.tech',
     }
 }
 
