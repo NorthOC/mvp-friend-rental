@@ -177,10 +177,11 @@ def profile_update_action(request):
         form = UserProfileUpdateForm(data=post_data, files=request.FILES, instance=request.user)
         
         if form.is_valid():
-            print(request.user.img_one.path)
-            print(User._meta.get_field('img_one').get_default())
             user = form.save(commit=False)
-            user.save()
+            if request.POST.get('img_one'):
+                user.save_with_img()
+            else:
+                user.save()
         else:
             print(form.errors.as_data)
     return redirect('profile', request.user.pk)

@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime as dt
 from django.core.files.storage import FileSystemStorage
+from PIL import Image
 
 class CityOfService(models.TextChoices):
     """ Susitikimo vietos """
@@ -156,6 +157,37 @@ class User(AbstractUser):
     @property
     def age(self):
         return int((dt.datetime.now().date() - self.birthday).days / 365.25)
+    
+    def save_with_img(self, *args, **kwargs):
+        super().save()
+        img = Image.open(self.img_one.path)
+        width, height = img.size  # Get dimensions
+
+        if width > 300 and height > 300:
+            # keep ratio but shrink down
+            img.thumbnail((width, height))
+
+        # check which one is smaller
+        if height < width:
+            # make square by cutting off equal amounts left and right
+            left = (width - height) / 2
+            right = (width + height) / 2
+            top = 0
+            bottom = height
+            img = img.crop((left, top, right, bottom))
+
+        elif width < height:
+            # make square by cutting off bottom
+            left = 0
+            right = width
+            top = 0
+            bottom = width
+            img = img.crop((left, top, right, bottom))
+
+        if width > 300 and height > 300:
+            img.thumbnail((300, 300))
+
+        img.save(self.img_one.path)
 
 class FriendSetting(models.Model):
     """
