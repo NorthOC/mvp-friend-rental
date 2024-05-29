@@ -427,7 +427,7 @@
                     <h3>Draugo pasiūlymo nustatymai</h3>
                     <button aria-label="Close" x-on:click="isSettingsModalOpen=false" id="close-modal">✖</button>
                 </div>
-                <small>Pajamų laukelyje nurodykite, kiek norėtumėte uždirbti. Jeigu pasiūlymas nėra viešas, vartotojai jums negalės teikti pasiūlymų susitikti.</small><br><br>
+                <small>Jeigu nepažymėsite žemiau esančio laukelio, vartotojai jums negalės teikti pasiūlymų susitikti.</small><br><br>
                 <form action="{% url 'friend-settings-update' %}" method="post" class="friend-settings-form">
                     {% csrf_token %}
                     <div class="profile-field">
