@@ -291,6 +291,7 @@ def meeting_page(request):
                                          Q(user=request.user)) &
                                          (Q(order_status = Order.OrderStatuses.COMPLETE) |
                                          Q(order_status = Order.OrderStatuses.DISPUTED) |
+                                         Q(order_status = Order.OrderStatuses.CANCELLED)|
                                          Q(order_status = Order.OrderStatuses.ABANDONED))
                                          )
     except:

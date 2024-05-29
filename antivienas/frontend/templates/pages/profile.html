@@ -111,9 +111,9 @@
                             {% endif %}
                         </div>
                         {% if friend_params and friend_params.is_public %}
-                        <div class="price-container">
+                        <!-- <div class="price-container">
                             <p><strong>Susitikimo kaina: {{friend_params.price_per_hour}}€/val.</strong></p>
-                        </div>
+                        </div> -->
                         {% endif %}
                     </div>
                 </div>
@@ -225,8 +225,8 @@
                 <textarea name="comment" id="comment" placeholder="papasakokite ką veiksite susitikimo metu" required></textarea>
                 <hr>
                 <div class="meeting-field-row">
-                    <label class="bolder" for="total_price">Galutinė kaina: </label>
-                    <input type="text" name="total_price" value="0" disabled id="meeting-price" class="bolder">
+                    <!-- <label class="bolder" for="total_price">Galutinė kaina: </label> -->
+                    <input type="hidden" name="total_price" value="0" disabled id="meeting-price" class="bolder">
                     <input type="hidden" name="total_price" value="0" id="true-meeting-price">
                 </div>
                 <hr>
@@ -431,8 +431,8 @@
                 <form action="{% url 'friend-settings-update' %}" method="post" class="friend-settings-form">
                     {% csrf_token %}
                     <div class="profile-field">
-                        <label for="price_per_hour">Pajamos eur/val.:</label>
-                        <input type="number" name="price_per_hour" id="" min="0" value="{{friend_params.price_per_hour}}" onkeydown="return event.key != 'Enter';">
+                        <!-- <label for="price_per_hour">Pajamos eur/val.:</label> -->
+                        <input type="hidden" name="price_per_hour" id="" min="0" value="{{friend_params.price_per_hour}}" onkeydown="return event.key != 'Enter';">
                     </div>
                     <div>
                         <input type="checkbox" name="is_public" id="" {% if friend_params.is_public%} checked {%endif%}>

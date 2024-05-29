@@ -253,7 +253,7 @@ class Order(models.Model):
 
     user =          models.ForeignKey(User, on_delete=models.DO_NOTHING)
     friend =        models.ForeignKey(FriendSetting, on_delete=models.DO_NOTHING)
-    meeting_day =   models.DateField(validators=[MinValueValidator(dt.date.today())])
+    meeting_day =   models.DateField()
     meeting_hour =  models.CharField(max_length=6, choices=MeetingHours)
     no_of_hours =   models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(72)])
     meeting_place = models.CharField(max_length=300)
