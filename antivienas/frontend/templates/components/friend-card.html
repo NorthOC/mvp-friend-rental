@@ -1,43 +1,57 @@
 {% load static %}
-<div class="friend-container">
+<a class="friend-container" href="{% url 'profile' friend.friend.pk %}">
     <div class="left-part">
-        <a href="{% url 'profile' user.friend.pk %}"><img src="{{ user.friend.img_one.url }}" alt=""></a>
+        <img src="{{ friend.friend.img_one.url }}" alt="">
         <div class="level-container">
-            <p class="level" style="background-color: var(--blue);">{{ user.get_level_display }}</p>
+            <p class="level" style="background-color: var(--blue);">{% if friend.friend.gender == "Vyras" %}{{ friend.get_level_display }}{% else %}{{ friend.get_level_display|slice:"0:-2"|add:"ė" }}{% endif %}</p>
         </div>
     </div>
     <div class="right-part">
-        <div class="header">
-            <small>{{ user.friend.age }}m. {{ user.friend.gender|lower|slice:"0:3" }}. {{ user.friend.city|title }}</small>
-            <a href="{% url 'profile' user.friend.pk %}">Peržiūrėti profilį</a>
-        </div>
-        <a href="{% url 'profile' user.friend.pk %}" class="profile-link-heading">
-            <h2>{{ user.friend.first_name|title }} {{ user.friend.last_name|upper|slice:"0:1" }}.</h2>
-        </a>
-        <div class="rating-price">
-            <div class="rating-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
-                <a href="{% url 'profile' user.friend.pk %}" class="rating">Nėra įvertinimų</a>
+        <div class="info-shell">
+            <div>
+                <div class="header">
+                    <small>{{ friend.friend.age }}m. {{ friend.friend.gender|lower|slice:"0:3" }}. {{ friend.friend.city|title }}</small>
+                </div>
+                <div class="name-part">
+                    <h2>{{ friend.friend.first_name|title }} {{ friend.friend.last_name|title }}</h2>
+                </div>
+                <div class="interest-container">
+                    {% if friend.friend.interest_one %}
+                    <p class="interest-item" style="background-color: {{ friend.friend.interest_color_one }};">{{friend.friend.interest_one}}</p>
+                    {% endif %}
+                    {% if friend.friend.interest_two %}
+                    <p class="interest-item" style="background-color: {{ friend.friend.interest_color_two }};">{{friend.friend.interest_two}}</p>
+                    {% endif %}
+                    {% if friend.friend.interest_three %}
+                    <p class="interest-item" style="background-color: {{ friend.friend.interest_color_three }};">{{friend.friend.interest_three}}</p>
+                    {% endif %}
+                    {% if friend.friend.interest_four %}
+                    <p class="interest-item" style="background-color: {{ friend.friend.interest_color_four }};">{{friend.friend.interest_four}}</p>
+                    {% endif %}
+                </div>
+                <div class="description-shell">
+                    <p>{{ friend.friend.description|truncatechars:40 }}</p>
+                </div>
             </div>
-            <div class="price-container" {% if not user.friend.is_id_verified %} title="Tapatybė nepatvirtinta" {% else %} title="Tapatybė patvirtinta" {% endif %}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" {% if not user.friend.is_id_verified %} style="fill: var(--pre-text);" {% endif %}><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path title="gay" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
-                {% if user.friend.is_id_verified %}
-                <span style="color: var(--checkmark-color);">tapatybė patvirtinta</span>
-                {% else %}
-                <span style="color: var(--pre-text);">tapatybė nepatvirtinta</span>
-                {% endif %}
+            <div class="price-part">
+                <small>Kaina val. </small>
+                <span><strong>{{ friend.price_per_hour }}</strong> €</span>
+            </div>
+            <div class="rating-part">
+                <div class="rating">
+                    <small>Atsiliepimai:</small>
+                    <div class="stars">
+                        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+                        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+                        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+                        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+                        <svg class="no-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="action-part">
+                <button>Susitikti</button>
             </div>
         </div>
-        <div class="interest-container">
-            {% if user.friend.interest_one %}
-            <p class="interest-item" style="background-color: {{ user.friend.interest_color_one }};">{{user.friend.interest_one}}</p>
-            {% endif %}
-            {% if user.friend.interest_two %}
-            <p class="interest-item" style="background-color: {{ user.friend.interest_color_two }};">{{user.friend.interest_two}}</p>
-            {% endif %}
-        </div>
-        {% if user.friend.description %}
-        <p>{% if user.friend.description|length > 150 %}{{ user.friend.description|truncatechars:150 }}{% else %}{{ user.friend.description }}{% endif %}</p>
-        {% endif %}
     </div>
-</div>
+</a>

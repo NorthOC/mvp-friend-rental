@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-import datetime as dt
 from django.core.files.storage import FileSystemStorage
+
 from PIL import Image
+import random
+import datetime as dt
 
 class CityOfService(models.TextChoices):
     """ Susitikimo vietos """
@@ -76,8 +78,72 @@ class Genders(models.TextChoices):
     VYRAS = "Vyras"
     MOTERIS = "Moteris"
 
-class OverwriteStorage(FileSystemStorage):
+class OrderStatuses(models.IntegerChoices):
+    INITIATED   = 1, 'Initiated'     # sukuriamas užsakymas
+    CONFIRMED   = 2, 'Confirmed'     # patvirtinamas užsakymas
+    PAID        = 3, "Paid"          # užsakymas apmokėtas ir laukia 4 sk. kodo iš draugo
+    COMPLETE    = 4, "Complete"      # įvykdytas užsakymas
+    CANCELLED   = 5, 'Cancelled'     # atšauktas užsakymas
+    ABANDONED   = 6, "Abandoned"     # apleistas užsakymas
+    DISPUTED    = 7, "Disputed"      # skundžiamas užsakymas
+    FAILED      = 8, "Failed"        # užsakymas buvo apmokėtas, bet nesulaukė kodo
+    
+class MeetingHours(models.TextChoices):
+    DEVYNIOS ="09:00","09:00"
+    DEVYNIOS_TRISDESIMT ="09:30","09:30"
+    DESIMT="10:00","10:00"
+    DESIMT_TRISDESIMT="10:30","10:30"
+    VIENUOLIKA="11:00","11:00"
+    VIENUOLIKA_TRISDESIMT="11:30","11:30"
+    DVYLIKA="12:00","12:00"
+    DVYLIKA_TRISDESIMT="12:30","12:30"
+    TRYLIKA="13:00","13:00"
+    TRYLIKA_TRISDESIMT="13:30","13:30"
+    KETURIOLIKA="14:00","14:00"
+    KETURIOLIKA_TRISDESIMT="14:30","14:30"
+    PENKIOLIKA="15:00","15:00"
+    PENKIOLIKA_TRISDESIMT="15:30","15:30"
+    SESIOLIKA="16:00","16:00"
+    SESIOLIKA_TRISDESIMT="16:30","16:30"
+    SEPTYNIOLIKA="17:00","17:00"
+    SEPTYNIOLIKA_TRISDESIMT="17:30","17:30"
+    ASTUONIOLIKA="18:00","18:00"
+    ASTUONIOLIKA_TRISDESIMT="18:30","18:30"
+    DEVYNIOLIKA="19:00","19:00"
+    DEVYNIOLIKA_TRISDESIMT="19:30","19:30"
+    DVIDESIMT="20:00","20:00"
 
+class ProfileTypes(models.TextChoices):
+    # vartotojų tipai (vartotojas arba draugas)
+    USER =      "User"
+    FRIEND =    "Friend"
+
+class PersonalityTypes(models.TextChoices):
+    INTRAVERT =     "Intravert"
+    EKSTRAVERT =    "Ekstravert"
+
+class InterestColorHexes(models.TextChoices):
+    GRAY =      "#D9D9D9", "Gray"
+    RED =       "#F6C4C4", "Red"
+    BLUE =      "#B2D8EE", "Blue"
+    GREEN =     "#B8F2C1", "Green"
+    PURPLE =    "#F1B8F2", "Purple"
+    YELLOW =    "#F6EAA5", "Yellow"
+
+class EducationChoices(models.TextChoices):
+    PAGRINDINIS = "Pagrindinis"
+    VIDURINIS = "Vidurinis"
+    AUKSTASIS = "Aukštasis"
+    AUKSTESNYSIS = "Aukštesnysis"
+    PRADINIS = "Pradinis"
+
+class LvlOfExperience(models.IntegerChoices):
+    NEWBIE      = 1, "Naujokas"         # pradinis lygis
+    EXPERIENCED = 2, "Patyręs"          # po 2 sėkmingų užsakymų
+    EXPERT      = 3, "Ekspertas"        # po 10 sėkmingų užsakymų
+    VETERAN     = 4, "Veteranas"        # po 50 sėkmingų užsakymų
+
+class OverwriteStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
         self.delete(name)
         return name
@@ -97,30 +163,6 @@ class User(AbstractUser):
     """
     Vartotojo modelis
     """
-    class ProfileTypes(models.TextChoices):
-        # vartotojų tipai (vartotojas arba draugas)
-        USER =      "User"
-        FRIEND =    "Friend"
-    
-    class PersonalityTypes(models.TextChoices):
-        INTRAVERT =     "Intravert"
-        EKSTRAVERT =    "Ekstravert"
-
-    class InterestColorHexes(models.TextChoices):
-        GRAY =      "#D9D9D9", "Gray"
-        RED =       "#F6C4C4", "Red"
-        BLUE =      "#B2D8EE", "Blue"
-        GREEN =     "#B8F2C1", "Green"
-        PURPLE =    "#F1B8F2", "Purple"
-        YELLOW =    "#F6EAA5", "Yellow"
-    
-    class EducationChoices(models.TextChoices):
-        PAGRINDINIS = "Pagrindinis"
-        VIDURINIS = "Vidurinis"
-        AUKSTASIS = "Aukštasis"
-        AUKSTESNYSIS = "Aukštesnysis"
-        PRADINIS = "Pradinis"
-
         
     # ID verifikavimui
     is_id_verified =    models.BooleanField(default=False)
@@ -194,19 +236,13 @@ class FriendSetting(models.Model):
     Vartotojai, kurie tampa draugais, įgyja papildomų parametrų
     """
     friend =            models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    # 20% (17% + 3% už pavedimą)
+    # 20% fee
     price_per_hour =    models.PositiveIntegerField(default=0)
     orders_completed =  models.PositiveIntegerField(default=0)
     is_public =         models.BooleanField(default=False)
     
     account_number =            models.CharField(max_length=20, blank=True)
     account_holder_details =    models.CharField(max_length=200, blank=True)
-
-    class LvlOfExperience(models.IntegerChoices):
-        NEWBIE      = 1, "Naujokas"       # pradinis lygis
-        EXPERIENCED = 2, "Patyręs"  # po 2 sėkmingų užsakymų
-        VETERAN     = 3, "Veteranas"      # po 10 sėkmingų užsakymų
-        EXPERT      = 4, "Ekspertas"       # specialus lygis psichologams
     
     level =     models.SmallIntegerField(choices=LvlOfExperience, default=LvlOfExperience.NEWBIE)
     created =   models.DateTimeField(auto_now_add=True)
@@ -218,38 +254,6 @@ class Order(models.Model):
     """
     Susitikimo užsakymas
     """
-    class OrderStatuses(models.IntegerChoices):
-        INITIATED   = 1, 'Initiated'     # sukuriamas užsakymas
-        CONFIRMED   = 2, 'Confirmed'     # patvirtinamas užsakymas
-        COMPLETE    = 3, "Complete"      # įvykdytas užsakymas
-        CANCELLED   = 4, 'Cancelled'     # atšauktas užsakymas
-        ABANDONED   = 5, "Abandoned"     # apleistas užsakymas
-        DISPUTED    = 6, "Disputed"      # skundžiamas užsakymas
-    
-    class MeetingHours(models.TextChoices):
-        DEVYNIOS ="09:00","09:00"
-        DEVYNIOS_TRISDESIMT ="09:30","09:30"
-        DESIMT="10:00","10:00"
-        DESIMT_TRISDESIMT="10:30","10:30"
-        VIENUOLIKA="11:00","11:00"
-        VIENUOLIKA_TRISDESIMT="11:30","11:30"
-        DVYLIKA="12:00","12:00"
-        DVYLIKA_TRISDESIMT="12:30","12:30"
-        TRYLIKA="13:00","13:00"
-        TRYLIKA_TRISDESIMT="13:30","13:30"
-        KETURIOLIKA="14:00","14:00"
-        KETURIOLIKA_TRISDESIMT="14:30","14:30"
-        PENKIOLIKA="15:00","15:00"
-        PENKIOLIKA_TRISDESIMT="15:30","15:30"
-        SESIOLIKA="16:00","16:00"
-        SESIOLIKA_TRISDESIMT="16:30","16:30"
-        SEPTYNIOLIKA="17:00","17:00"
-        SEPTYNIOLIKA_TRISDESIMT="17:30","17:30"
-        ASTUONIOLIKA="18:00","18:00"
-        ASTUONIOLIKA_TRISDESIMT="18:30","18:30"
-        DEVYNIOLIKA="19:00","19:00"
-        DEVYNIOLIKA_TRISDESIMT="19:30","19:30"
-        DVIDESIMT="20:00","20:00"
 
     user =          models.ForeignKey(User, on_delete=models.DO_NOTHING)
     friend =        models.ForeignKey(FriendSetting, on_delete=models.DO_NOTHING)
@@ -262,6 +266,8 @@ class Order(models.Model):
     total_price =   models.PositiveIntegerField(validators=[MinValueValidator(0)])
 
     order_status =          models.SmallIntegerField(choices=OrderStatuses, default=OrderStatuses.INITIATED)
+    confirmation_code =     models.SmallIntegerField(default=random.randint(1000,9999))
+    is_disputable =         models.BooleanField(default=True)
     created =               models.DateTimeField(auto_now_add=True)
 
     @property
@@ -281,8 +287,6 @@ class Order(models.Model):
     
         return f"{MONTHS[self.meeting_day.month-1]} {self.meeting_day.day} d. {self.meeting_day.year}m."
     
-
-
 class Dispute(models.Model):
     """
     Skundų lentelė

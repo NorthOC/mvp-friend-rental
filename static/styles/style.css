@@ -219,11 +219,10 @@ main{
 /* SEARCH BOX COMPONENT */
 .middle-container .search-container{
     background-color: var(--component-bg);
-    max-width: 600px;
-    width: 100%;
+    width: 90%;
     padding: 20px;
     margin: 30px 0px;
-    border-radius: 10px;
+    border-radius: 10px 10px 0px 0px;
     box-shadow: 0px 0px 10px 0px var(--fade);
 }
 .search-container .filter-container{
@@ -237,11 +236,10 @@ main{
     gap: 20px;
 }
 .search-container .filter select{
-    background: var(--nav-hover);
     border-radius: 20px;
     padding: 5px 10px;
     min-width: 120px;
-    border: none;
+    border: 1px solid gray;
 }
 .search-container .search-field{
     box-shadow: inset 1px 1px 2px 2px var(--fade);
@@ -278,16 +276,31 @@ main{
 }
 /* FRIEND CARD COMPONENT */
 .friend-container{
-    max-width: 600px;
-    width: 100%;
+    width: 90%;
     background-color: var(--component-bg);
-    border-radius: 30px;
-    display: flex;
     padding: 10px;
-    gap: 10px;
-    box-shadow: 2px 2px 4px 0px var(--fade);
-    margin-bottom: 30px;
+    box-shadow: 0px 0px 4px 0px var(--fade);
+    margin-bottom: 15px;
     font-size: 0.95em;
+    gap: 10px;
+    text-decoration: none;
+    display: flex;
+    height: auto;
+    min-height: 150px;
+    max-height: 500px;
+}
+.friend-container:hover{
+    box-shadow: 0px 0px 4px 0px rgb(145, 145, 145);
+}
+.friend-container .info-shell{
+    display: grid;
+    grid-template-columns: 1.5fr 0.7fr 0.7fr 1fr;
+    align-items: center;
+    gap: 20px;
+}
+.friend-container .stars{
+    width: fit-content;
+    margin: auto;
 }
 .friend-container img{
     max-width: 120px;
@@ -300,9 +313,37 @@ main{
     gap: 5px;
     min-width: 120px;
     justify-content: center;
+    position: relative;
+    max-height: 130px;
 }
 .friend-container .right-part{
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    justify-content: center;
+}
+.friend-container .rating-part{
+    min-width: 120px;
+}
+
+.action-part button{
+    height: 40px;
+    max-width: 150px;
+    border: none;
+    border: 1px solid var(--light-gray);
+    background: var(--expander-gray);
+    border-radius: 5px;
+    min-width: 150px;
+    font-size: 16px;
+    display: block;
+    margin: auto;
+}
+.action-part button:hover{
+    box-shadow: 0px 0px 4px 0px gray;
+}
+.friend-container .level-container{
+    position: absolute;
+    bottom: 0;
 }
 .friend-container .level, .level-container .level{
     padding: 2px 10px;
@@ -310,15 +351,6 @@ main{
     text-transform: uppercase;
     font-weight: 500;
     color: var(--component-bg);
-}
-.friend-container .header{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-.friend-container .header a{
-    display: block;
-    text-align: right;
-    margin-right: 10px;
 }
 .friend-container small{
     font-size: 15px;
@@ -330,13 +362,27 @@ main{
 .friend-container .profile-link-heading{
     text-decoration: none;
 }
-.friend-container .rating-price{
+.friend-container .price-part{
     display: flex;
+    flex-direction: column;
     gap: 10px;
     font-size: 1.1em;
+    width: 150px;
 }
-.rating-price a{
-    text-decoration: none;
+.rating-part svg{
+    width: 20px;
+}
+.rating-part .star{
+    fill: var(--star-color);
+}
+.rating-part .no-star{
+    fill: var(--light-gray);
+}
+.rating-part p{
+    text-align: center;
+}
+.price-part strong{
+    font-size: 25px;
 }
 .friend-container .rating-container, 
 .friend-container .price-container{
@@ -357,7 +403,8 @@ main{
 }
 .friend-container .interest-container{
     display: flex;
-    gap: 10px;
+    gap: 5px;
+    flex-wrap: wrap;
     margin: 5px 0px;
 }
 .interest-item{

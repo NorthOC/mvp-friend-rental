@@ -12,7 +12,7 @@
 </head>
 <body>
     {% include "components/top-nav.html" %}
-    <main class="main-section main-triple-split">
+    <main class="main-section main-double-split">
         <div class="left-container">
             {% include "components/side-nav.html" %}
             {% include "components/terms-of-service.html" %}
@@ -22,7 +22,7 @@
 
             {% if friends %}
 
-            {% for user in friends %}
+            {% for friend in friends %}
                 {% include "components/friend-card.html" %}
             {% endfor %}
             
@@ -32,11 +32,6 @@
                 Draugų, su tokiais paieškos parametrais, neradome. Galbūt nori <a href="#">būti pirmas</a>?
             </p> 
             {% endif %}
-        </div>
-        <div class="right-container">
-            <!-- 
-            <hr>
-            -->
         </div>
 
     </main>

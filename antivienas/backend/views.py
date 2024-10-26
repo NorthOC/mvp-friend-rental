@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from .forms import MyUserCreationForm, UserProfileUpdateForm, FriendSettingsUpdateForm
 from .forms import MeetingCreationForm, MeetingCancelForm, CreateDisputeForm
 from django.contrib import messages
@@ -6,16 +6,17 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from antivienas.database.models import CityOfService, User, Genders, FriendSetting, Order
+from antivienas.database.models import InterestColorHexes, EducationChoices, MeetingHours, OrderStatuses, ProfileTypes, PersonalityTypes
 import datetime as dt
 
 #GLOBAL VARS
 CITY_CHOICES = dict((value, key) for key, value in CityOfService.choices)
 GENDERS = dict((value, key) for key, value in Genders.choices)
-COLORS = dict((value, key) for key, value in User.InterestColorHexes.choices)
-PERSONALITY_TYPES = dict((value, key) for key, value in User.PersonalityTypes.choices)
-EDU_CHOICES = dict((value, key) for key, value in User.EducationChoices.choices)
-MEETING_HOURS = dict((value, key) for key, value in Order.MeetingHours.choices)
-ORDER_STATUSES = dict((value, key) for key, value in Order.OrderStatuses.choices)
+COLORS = dict((value, key) for key, value in InterestColorHexes.choices)
+PERSONALITY_TYPES = dict((value, key) for key, value in PersonalityTypes.choices)
+EDU_CHOICES = dict((value, key) for key, value in EducationChoices.choices)
+MEETING_HOURS = dict((value, key) for key, value in MeetingHours.choices)
+ORDER_STATUSES = dict((value, key) for key, value in OrderStatuses.choices)
 
 # Create your views here.
 
@@ -37,12 +38,16 @@ def index_page(request):
     context['gender'] = gender
     context['sort_by'] = sort_by
 
-    friends = FriendSetting.objects.filter(
+    friends = FriendSetting.objects.all()
+    friends = friends.filter(
         Q(is_public=True) &
-        Q(friend__first_name__icontains=search_query) &
         Q(friend__city__icontains=city) &
         Q(friend__gender__icontains=gender)
     )
+
+    for query in search_query.split(" "):
+        friends = friends.filter(Q(friend__first_name__icontains=query) | Q(friend__last_name__icontains=query))
+
     if friends:
         match sort_by:
             case 'age_up':
@@ -116,7 +121,7 @@ def login_page(request):
             login(request, user)
             return redirect('index')
         else:
-            messages.error(request, 'Username OR password does not exit')
+            messages.error(request, 'Wrong password. Please try again.')
 
     return render(request, template)
 
@@ -156,7 +161,7 @@ def profile_page(request, user_id):
 
 @login_required
 def become_friend_action(request):
-    
+    request.user.profile_type = ProfileTypes.FRIEND
     FriendSetting.objects.get_or_create(friend=request.user)
 
     return redirect('profile', request.user.pk)
@@ -264,14 +269,14 @@ def meeting_page(request):
         friend = FriendSetting.objects.get(friend=request.user)
     except FriendSetting.DoesNotExist:
         active_orders = Order.objects.filter(Q(user=request.user) &
-                                         (Q(order_status = Order.OrderStatuses.INITIATED) |
-                                         Q(order_status = Order.OrderStatuses.CONFIRMED))
+                                         (Q(order_status = OrderStatuses.INITIATED) |
+                                         Q(order_status = OrderStatuses.CONFIRMED))
                                          )
     else:
         active_orders = Order.objects.filter((Q(friend=friend) | 
                                          Q(user=request.user)) &
-                                         (Q(order_status = Order.OrderStatuses.INITIATED) |
-                                         Q(order_status = Order.OrderStatuses.CONFIRMED))
+                                         (Q(order_status = OrderStatuses.INITIATED) |
+                                         Q(order_status = OrderStatuses.CONFIRMED))
                                          )
     
     # update meeting statuses with time
@@ -279,27 +284,27 @@ def meeting_page(request):
     for order in active_orders:
         order_hours = order.meeting_hour.split(":")
         order_date = dt.datetime.combine(order.meeting_day,dt.time(int(order_hours[0]), int(order_hours[1])))
-        if time_now > order_date and order.order_status == Order.OrderStatuses.CONFIRMED:
-            order.order_status = Order.OrderStatuses.COMPLETE
+        if time_now > order_date and order.order_status == OrderStatuses.CONFIRMED:
+            order.order_status = OrderStatuses.COMPLETE
             order.save()
-        elif time_now > order_date and order.order_status == Order.OrderStatuses.INITIATED:
-            order.order_status = Order.OrderStatuses.ABANDONED
+        elif time_now > order_date and order.order_status == OrderStatuses.INITIATED:
+            order.order_status = OrderStatuses.ABANDONED
             order.save()
 
     try:
         inactive_orders = Order.objects.filter((Q(friend=friend) | 
                                          Q(user=request.user)) &
-                                         (Q(order_status = Order.OrderStatuses.COMPLETE) |
-                                         Q(order_status = Order.OrderStatuses.DISPUTED) |
-                                         Q(order_status = Order.OrderStatuses.CANCELLED)|
-                                         Q(order_status = Order.OrderStatuses.ABANDONED))
+                                         (Q(order_status = OrderStatuses.COMPLETE) |
+                                         Q(order_status = OrderStatuses.DISPUTED) |
+                                         Q(order_status = OrderStatuses.CANCELLED)|
+                                         Q(order_status = OrderStatuses.ABANDONED))
                                          )
     except:
         inactive_orders = Order.objects.filter(Q(user=request.user) &
-                                         (Q(order_status = Order.OrderStatuses.COMPLETE) |
-                                         Q(order_status = Order.OrderStatuses.CANCELLED) |
-                                         Q(order_status = Order.OrderStatuses.DISPUTED) |
-                                         Q(order_status = Order.OrderStatuses.ABANDONED))
+                                         (Q(order_status = OrderStatuses.COMPLETE) |
+                                         Q(order_status = OrderStatuses.CANCELLED) |
+                                         Q(order_status = OrderStatuses.DISPUTED) |
+                                         Q(order_status = OrderStatuses.ABANDONED))
                                          )
         
     context['active_orders'] = active_orders.order_by("meeting_day")
@@ -315,7 +320,7 @@ def delete_meeting_action(request):
         except:
             return redirect("meeting-page")
         
-        if order.order_status == Order.OrderStatuses.INITIATED and request.user == order.user:
+        if order.order_status == OrderStatuses.INITIATED and request.user == order.user:
             order.delete()
     
     return redirect("meeting-page")
@@ -328,8 +333,8 @@ def confirm_meeting_action(request):
         except:
             return redirect("meeting-page")
         
-        if order.order_status == Order.OrderStatuses.INITIATED and request.user == order.friend.friend:
-            order.order_status = Order.OrderStatuses.CONFIRMED
+        if order.order_status == OrderStatuses.INITIATED and request.user == order.friend.friend:
+            order.order_status = OrderStatuses.CONFIRMED
             order.save()
     
     return redirect("meeting-page")
@@ -347,14 +352,14 @@ def cancel_meeting_action(request):
         if request.POST.get('cancel_reason'):
             post_data['cancel_reason'] = request.POST.get('cancel_reason')
 
-        if order.order_status == Order.OrderStatuses.INITIATED and request.user == order.friend.friend:
-            post_data['order_status'] = Order.OrderStatuses.CANCELLED
+        if order.order_status == OrderStatuses.INITIATED and request.user == order.friend.friend:
+            post_data['order_status'] = OrderStatuses.CANCELLED
             form = MeetingCancelForm(data=post_data, instance=order)
             if form.is_valid:
                 form.save()
                 
-        elif order.order_status == Order.OrderStatuses.COMPLETE and request.user == order.friend.friend:
-            order.order_status = Order.OrderStatuses.DISPUTED
+        elif order.order_status == OrderStatuses.COMPLETE and request.user == order.friend.friend:
+            order.order_status = OrderStatuses.DISPUTED
             order.save()
             post_data['friend_comment'] = request.POST.get("cancel_reason") if request.POST.get("cancel_reason") != None else ""
             post_data['order'] = order
@@ -362,8 +367,8 @@ def cancel_meeting_action(request):
             if form.is_valid():
                 form.save()
 
-        elif order.order_status == Order.OrderStatuses.COMPLETE and request.user == order.user:
-            order.order_status = Order.OrderStatuses.DISPUTED
+        elif order.order_status == OrderStatuses.COMPLETE and request.user == order.user:
+            order.order_status = OrderStatuses.DISPUTED
             order.save()
             post_data['user_comment'] = request.POST.get("cancel_reason") if request.POST.get("cancel_reason") != None else ""
             post_data['order'] = order

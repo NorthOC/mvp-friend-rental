@@ -24,7 +24,7 @@
                         <div class="image-container" data-id="0">
                             <img src="{{ user.img_one.url }}" alt="">
                         </div>
-                        <!-- <div class="carousel">
+                        <div class="carousel">
                             <div class="left-img">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z"/></svg>
                             </div>
@@ -34,14 +34,14 @@
                             <div class="right-img">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
                             </div>
-                        </div> -->
+                        </div>
                         <p>Tapo nariu: {{user.date_joined|date:"m-Y"}}</p>
                     </div>
                     <div class="info-container">
                         <div class="name-container"><h1>{{user.first_name}} {{user.last_name}}</h1> <small>{{ user.gender|lower|slice:"0:3" }}. {{ user.age }}m.</small></div>
                         <div class="level-container">
                             {% if friend_params %}
-                            <p class="level" style="background-color: var(--blue);">{{friend_params.get_level_display}}</p>
+                            <p class="level" style="background-color: var(--blue);">{% if user.gender == "Vyras" %}{{ friend_params.get_level_display }}{% else %}{{ friend_params.get_level_display|slice:"0:-2"|add:"ė" }}{% endif %}</p>
                             {% endif %}
                             <div class="id-container">
                             {% if user.is_id_verified %}
@@ -111,9 +111,9 @@
                             {% endif %}
                         </div>
                         {% if friend_params and friend_params.is_public %}
-                        <!-- <div class="price-container">
+                        <div class="price-container">
                             <p><strong>Susitikimo kaina: {{friend_params.price_per_hour}}€/val.</strong></p>
-                        </div> -->
+                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -130,9 +130,9 @@
                     {% if request.user == user %}
                     <button type="button" id="edit-profile-btn" x-on:click="isEditModalOpen = true">Redaguoti profilį</button>
                     {% endif %}
-                    <!-- {% if request.user == user %}
+                    {% if request.user == user and not request.user.is_id_verified %}
                     <button type="button" id="order-btn" x-on:click="isIDModalOpen = true">Patvirtinti tapatybę</button>
-                    {% endif %} -->
+                    {% endif %}
                     {% if friend_params.friend == request.user %}
                     <button type="button" id="friend-setting-btn" x-on:click="isSettingsModalOpen = true">Draugo nustatymai</button>
                     {% elif user == request.user and not friend_params %}
@@ -150,7 +150,7 @@
         </div>
     </main>
     <div class="overlay" x-show="isIDModalOpen || isEditModalOpen || isOrderModalOpen || isSettingsModalOpen" x-cloak></div>
-    <!-- {% if request.user == user %}
+    {% if request.user == user %}
     <div
         class="modal"
         role="dialog"
@@ -182,7 +182,7 @@
             </form>
         </div>
     </div>
-    {% endif %} -->
+    {% endif %}
     {% if friend_params and request.user.is_authenticated and request.user != friend_params.friend  %}
     <div
         class="modal"
@@ -225,8 +225,8 @@
                 <textarea name="comment" id="comment" placeholder="papasakokite ką veiksite susitikimo metu" required></textarea>
                 <hr>
                 <div class="meeting-field-row">
-                    <!-- <label class="bolder" for="total_price">Galutinė kaina: </label> -->
-                    <input type="hidden" name="total_price" value="0" disabled id="meeting-price" class="bolder">
+                    <label class="bolder" for="total_price">Galutinė kaina: </label>
+                    <input type="text" name="total_price" value="0" disabled id="meeting-price" class="bolder">
                     <input type="hidden" name="total_price" value="0" id="true-meeting-price">
                 </div>
                 <hr>
@@ -431,8 +431,8 @@
                 <form action="{% url 'friend-settings-update' %}" method="post" class="friend-settings-form">
                     {% csrf_token %}
                     <div class="profile-field">
-                        <!-- <label for="price_per_hour">Pajamos eur/val.:</label> -->
-                        <input type="hidden" name="price_per_hour" id="" min="0" value="{{friend_params.price_per_hour}}" onkeydown="return event.key != 'Enter';">
+                        <label for="price_per_hour">Pajamos eur/val.:</label>
+                        <input type="number" name="price_per_hour" id="" min="0" value="{{friend_params.price_per_hour}}" onkeydown="return event.key != 'Enter';">
                     </div>
                     <div>
                         <input type="checkbox" name="is_public" id="" {% if friend_params.is_public%} checked {%endif%}>

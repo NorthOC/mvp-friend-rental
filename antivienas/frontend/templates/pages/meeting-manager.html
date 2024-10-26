@@ -29,7 +29,7 @@
                     <tr class="table-head">
                         <th style="width: 20%;">Draugas / Užsakovas</th>
                         <th class="meeting-detail-header">Susitikimo detalės</th>
-                        <!-- <th>Kaina</th> -->
+                        <th>Kaina</th>
                         <th class="meeting-status-header">Statusas</th>
                     </tr>
                     {% if active_orders %}
@@ -45,7 +45,7 @@
                                 <li><strong>Komentaras: </strong> {{order.comment}}</li>
                             </ul>
                         </td>
-                        <!-- <td class="order-price">{{order.total_price}}€</td> -->
+                        <td class="order-price">{{order.total_price}}€</td>
                         {% if order.order_status == 1 and request.user == order.user %}
 
                         <td class="order-status"><p>Susitikimas laukia patvirtinimo! Jums nieko daryti nereikia.</p><br>
@@ -97,7 +97,7 @@
                         <tr class="table-head">
                             <th style="width: 20%;">Draugas / Užsakovas</th>
                             <th class="meeting-detail-header">Susitikimo detalės</th>
-                            <!-- <th>Kaina</th> -->
+                            <th>Kaina</th>
                             <th class="meeting-status-header">Statusas</th>
                         </tr>
                     {% for order in inactive_orders %}
@@ -112,7 +112,7 @@
                                 <li><strong>Komentaras: </strong> {{order.comment}}</li>
                             </ul>
                         </td>
-                        <!-- <td class="order-price">{{order.total_price}}€</td> -->
+                        <td class="order-price">{{order.total_price}}€</td>
 
                         {% if order.order_status == 3 %}
 

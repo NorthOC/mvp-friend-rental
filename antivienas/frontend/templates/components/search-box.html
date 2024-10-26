@@ -1,7 +1,7 @@
 <div class="search-container">
     <form action="" method="get">
         <div class="search-box">
-            <input class="search-field" type="search" name="q" id="q" placeholder="pvz. Jonas" autocomplete="off">
+            <input class="search-field" type="search" name="q" id="q" placeholder="paieška" autocomplete="off">
             <input type="submit" value="Ieškoti" class="search-submit">
         </div>
         <div class="filter-container">
@@ -26,7 +26,7 @@
             </div>
             <div class="filter">
                 <select name="filter-by" id="gender-filter">
-                    <option value="" {% if not sort_by %} selected {% endif %}>Pirmenybė</option>
+                    <option value="" {% if not sort_by %} selected {% endif %}>Rūšiavimas</option>
                     <option value="">----------</option>
                     <option value="age_up" {% if sort_by == 'age_up' %} selected {% endif %}>Jaunausi</option>
                     <option value="age_down" {% if sort_by == 'age_down' %} selected {% endif %}>Seniausi</option>
