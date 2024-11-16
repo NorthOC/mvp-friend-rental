@@ -12,7 +12,7 @@
 </head>
 <body>
     {% include "components/top-nav.html" %}
-    <main class="main-section main-triple-split">
+    <main class="main-triple-split">
         <div class="left-container">
             {% include "components/side-nav.html" %}
             {% include "components/terms-of-service.html" %}
@@ -34,19 +34,11 @@
                             <label for="password">Slaptažodis:</label>
                             <input type="password" name="password" id="" required>
                         </div>
-                        <div>
-                            <input type="checkbox" name="remember-me" id="remember-me">
-                            <label for="remember-me">Prisiminti mane šiame kompiuteryje</label>
-                        </div>
                         <button type="submit" id="login-btn">Prisijungti</button>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="right-container">
-
-        </div>
-
     </main>
 </body>
 </html>

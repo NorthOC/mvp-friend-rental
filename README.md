@@ -1,10 +1,20 @@
-# Samdomų draugų platforma: "Anti Vienas". Baigiamasis darbas
+TODO:
 
-Tai yra oficiali Denis Lisunov (ISI-21) baigiamojo darbo repozitorija
+fix profile page visuals
+fix meeting manager visuals
+add functionality to become a friend (nav btn, form)
+add functionality for profile edit (form)
+add functionality for id verification (form)
+add functionality to manage friend settings (form)
+add functionality to meetup (profile, homepage, form)
+implement meeting pipeline functionality (microservice)
+add random 4-digit security code to meetings
+add smtp verification
+add recaptcha
 
-Skaidrės URL: [https://docs.google.com/presentation/d/1oB9U6B5JZZIvbZGWlsPtkhPGCgUMyjKjPfDfFSSWBe4/edit?usp=sharing](https://docs.google.com/presentation/d/1oB9U6B5JZZIvbZGWlsPtkhPGCgUMyjKjPfDfFSSWBe4/edit?usp=sharing)
-
-Darbas PDF: [https://drive.google.com/file/d/1AOCTrZnhVs3tpN71I3FR5yoBziBSfLVf/view?usp=sharing](https://drive.google.com/file/d/1AOCTrZnhVs3tpN71I3FR5yoBziBSfLVf/view?usp=sharing)
-
-
-[https://www.antivienas.lt/](https://www.antivienas.lt/)
+change link structure to get users not by /profile/{id}
+add terms of service, cookies, etc.
+add celery task to check meeting status
+add about page
+add faq page
+add safety guidelines page

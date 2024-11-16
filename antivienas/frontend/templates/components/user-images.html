@@ -1,0 +1,81 @@
+{% load static %}
+<div id="img-update-section" class="img-update-section">
+    {% if images.0 %}
+    <div class="img-shell">
+    <img src="{{ images.0.image.url }}" alt="">
+    <form class="delete-action" hx-post="{% url 'image-delete' 0 %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="click">
+        {% csrf_token %}
+        <svg class="delete-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+    </form>
+    {% if request.user.avatar != images.0 %}
+    <form class="avatar-action" hx-post="{% url 'set-avatar' 0 %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="click">
+        {% csrf_token %}
+        <svg class="avatar-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm177.6 62.1C192.8 334.5 218.8 352 256 352s63.2-17.5 78.4-33.9c9-9.7 24.2-10.4 33.9-1.4s10.4 24.2 1.4 33.9c-22 23.8-60 49.4-113.6 49.4s-91.7-25.5-113.6-49.4c-9-9.7-8.4-24.9 1.4-33.9s24.9-8.4 33.9 1.4zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+    </form>
+    {% endif %}
+    </div>
+    {% if images.1 %}
+    <div class="img-shell">
+    <img src="{{ images.1.image.url }}" alt="">
+    <form class="delete-action" hx-post="{% url 'image-delete' 1 %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="click">
+        {% csrf_token %}
+        <svg class="delete-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+    </form>
+    {% if request.user.avatar != images.1 %}
+    <form class="avatar-action" hx-post="{% url 'set-avatar' 1 %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="click">
+        {% csrf_token %}
+        <svg class="avatar-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm177.6 62.1C192.8 334.5 218.8 352 256 352s63.2-17.5 78.4-33.9c9-9.7 24.2-10.4 33.9-1.4s10.4 24.2 1.4 33.9c-22 23.8-60 49.4-113.6 49.4s-91.7-25.5-113.6-49.4c-9-9.7-8.4-24.9 1.4-33.9s24.9-8.4 33.9 1.4zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+    </form>
+    {% endif %}
+    </div>
+        {% if images.2 %}
+    <div class="img-shell">
+    <img src="{{ images.2.image.url }}" alt="">
+    <form class="delete-action" hx-post="{% url 'image-delete' 2 %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="click">
+        {% csrf_token %}
+            <svg class="delete-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+        </form>
+    {% if request.user.avatar != images.2 %}
+    <form class="avatar-action" hx-post="{% url 'set-avatar' 2 %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="click">
+        {% csrf_token %}
+        <svg class="avatar-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm177.6 62.1C192.8 334.5 218.8 352 256 352s63.2-17.5 78.4-33.9c9-9.7 24.2-10.4 33.9-1.4s10.4 24.2 1.4 33.9c-22 23.8-60 49.4-113.6 49.4s-91.7-25.5-113.6-49.4c-9-9.7-8.4-24.9 1.4-33.9s24.9-8.4 33.9 1.4zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+    </form>
+    {% endif %}
+    </div>
+        {% else %}
+    <div class="img-shell">
+        <img src="{% static 'assets/user-no-avatar.png' %}" alt="">
+        <form class="upload-action" hx-post="{% url 'image-upload' %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="change from:#img-three-upload" hx-encoding='multipart/form-data'>
+            {% csrf_token %}
+            <label for="img-three-upload" class="img-upload-label">
+                <input type="file" id="img-three-upload" name="image" accept="image/*" style="display: none;">
+                <svg class="upload-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+            </label>
+        </form>
+    </div>
+        {% endif %}
+    {% else %}
+    <div class="img-shell">
+        <img src="{% static 'assets/user-no-avatar.png' %}" alt="">
+        <form class="upload-action" hx-post="{% url 'image-upload' %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="change from:#img-two-upload" hx-encoding='multipart/form-data'>
+            {% csrf_token %}
+            <label for="img-two-upload" class="img-upload-label">
+                <input type="file" id="img-two-upload" name="image" accept="image/*" style="display: none;">
+                <svg class="upload-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+            </label>
+        </form>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="img-shell">
+    <img src="{% static 'assets/user-no-avatar.png' %}" alt="">
+    <form class="upload-action" hx-post="{% url 'image-upload' %}" hx-target="#img-update-section" hx-swap="outerHTML" hx-trigger="change from:#img-one-upload" hx-encoding='multipart/form-data'>
+        {% csrf_token %}
+        <label for="img-one-upload" class="img-upload-label">
+            <input type="file" id="img-one-upload" name="image" accept="image/*" style="display: none;">
+            <svg class="upload-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+        </label>
+    </form>
+    </div>
+    {% endif %}
+</div>

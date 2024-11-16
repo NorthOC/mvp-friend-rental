@@ -1,19 +1,22 @@
 from django.shortcuts import render, redirect
 from .forms import MyUserCreationForm, UserProfileUpdateForm, FriendSettingsUpdateForm
 from .forms import MeetingCreationForm, MeetingCancelForm, CreateDisputeForm
+from .forms import UserDescriptionUpdateForm
+from .forms import UserImgUploadForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
+from django.core.files import File
 from antivienas.database.models import CityOfService, User, Genders, FriendSetting, Order
-from antivienas.database.models import InterestColorHexes, EducationChoices, MeetingHours, OrderStatuses, ProfileTypes, PersonalityTypes
+from antivienas.database.models import InterestColorHexes, EducationChoices, MeetingHours, OrderStatuses, ProfileTypes
+from antivienas.database.models import UserProfilePicture
 import datetime as dt
 
 #GLOBAL VARS
 CITY_CHOICES = dict((value, key) for key, value in CityOfService.choices)
 GENDERS = dict((value, key) for key, value in Genders.choices)
 COLORS = dict((value, key) for key, value in InterestColorHexes.choices)
-PERSONALITY_TYPES = dict((value, key) for key, value in PersonalityTypes.choices)
 EDU_CHOICES = dict((value, key) for key, value in EducationChoices.choices)
 MEETING_HOURS = dict((value, key) for key, value in MeetingHours.choices)
 ORDER_STATUSES = dict((value, key) for key, value in OrderStatuses.choices)
@@ -38,8 +41,7 @@ def index_page(request):
     context['gender'] = gender
     context['sort_by'] = sort_by
 
-    friends = FriendSetting.objects.all()
-    friends = friends.filter(
+    friends = FriendSetting.objects.filter(
         Q(is_public=True) &
         Q(friend__city__icontains=city) &
         Q(friend__gender__icontains=gender)
@@ -130,15 +132,11 @@ def logout_action(request):
     logout(request)
     return redirect('index')
 
+
 def profile_page(request, user_id):
     """viewing of a user/friend profile"""
-    template = "pages/profile.html"
-    context = {'colors':COLORS, 
-               'cities': CITY_CHOICES, 
-               'educations':EDU_CHOICES, 
-               'genders':GENDERS,
-               'personality_types': PERSONALITY_TYPES,
-               'meeting_hours' : MEETING_HOURS}
+    template = "pages/profile/profile.html"
+    context = {}
 
     try:
         user = User.objects.get(pk=user_id)
@@ -157,10 +155,13 @@ def profile_page(request, user_id):
     except:
         pass
 
+    context['images'] = UserProfilePicture.objects.filter(user=user).order_by("created")
+
     return render(request, template, context)
 
 @login_required
 def become_friend_action(request):
+    #TODO: Make this proper
     request.user.profile_type = ProfileTypes.FRIEND
     FriendSetting.objects.get_or_create(friend=request.user)
 
@@ -168,6 +169,12 @@ def become_friend_action(request):
 
 @login_required
 def profile_update_action(request):
+    template = "pages/profile/profile-update.html"
+    context = {'colors':COLORS, 
+               'cities': CITY_CHOICES, 
+               'educations':EDU_CHOICES, 
+               'genders':GENDERS,}
+    
     if request.method == 'POST':
         post_data = request.POST.copy()
 
@@ -177,19 +184,76 @@ def profile_update_action(request):
             post_data['gender'] = GENDERS[request.POST.get('gender')]
         if request.POST.get('education'):
             post_data['education'] = EDU_CHOICES[request.POST.get('education')]
-        if request.POST.get('personality_type'):
-            post_data['personality_type'] = PERSONALITY_TYPES[request.POST.get('personality_type')]
-        form = UserProfileUpdateForm(data=post_data, files=request.FILES, instance=request.user)
+        form = UserProfileUpdateForm(data=post_data, instance=request.user)
         
         if form.is_valid():
-            user = form.save(commit=False)
-            if request.POST.get('img_one'):
-                user.save_with_img()
-            else:
-                user.save()
+            form.save()
+            return redirect('profile', request.user.pk)
         else:
-            print(form.errors.as_data)
-    return redirect('profile', request.user.pk)
+            messages.error(request, form.errors.as_text)
+    
+
+    context['images'] = request.user.images.all().order_by("created")
+    return render(request, template, context)
+
+@login_required
+def description_update_action(request):
+    template = "pages/profile/description-update.html"
+    
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        # regex for tel. \+370\s?\d{3}\s?\d{5}
+        # email regex. \S*@\S*\s?
+        # link regex. https?:\/\/\S+|www\.\S+|[a-zA-Z]{1,}\.[a-zA-Z]{2,}\/\S+
+
+        form = UserDescriptionUpdateForm(data=post_data, instance=request.user)
+        
+        if form.is_valid():
+            form.save()
+            return redirect('profile', request.user.pk)
+        else:
+            messages.error(request, form.errors.as_text)
+    return render(request, template)
+
+@login_required
+def img_delete_action(request, img_id):
+    if request.method == 'POST':
+        if img_id >= 0 and img_id <= 3:
+            try:
+                request.user.images.all().order_by("created")[img_id].delete()
+            except:
+                pass
+
+        context = {"images": request.user.images.all().order_by("created")}
+        return render(request, "components/user-images.html", context=context)
+
+@login_required
+def img_upload_action(request):
+
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        post_data['user'] = request.user
+
+        form = UserImgUploadForm(data=post_data, files=request.FILES)
+        
+        if form.is_valid():
+            image = form.save(commit=False)
+            image.crop_and_save()
+        else:
+            messages.error(request, form.errors.as_text)
+            return render(request, "components/user-images.html")
+        
+        context = {"images": request.user.images.all().order_by("created")}
+        return render(request, "components/user-images.html", context=context)
+
+@login_required
+def select_avatar_action(request, img_id):
+    if request.method == 'POST':
+        UserProfilePicture.set_avatar(request.user, img_id)
+    
+        context = {"images": request.user.images.all().order_by("created")}
+        return render(request, "components/user-images.html", context=context)
+
 
 @login_required
 def friend_settings_update_action(request):

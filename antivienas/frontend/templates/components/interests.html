@@ -1,0 +1,12 @@
+{% if user.interest_one %}
+<p class="interest-item" style="background-color: {{ user.interest_color_one }};">{{user.interest_one}}</p>
+{% endif %}
+{% if user.interest_two %}
+<p class="interest-item" style="background-color: {{ user.interest_color_two }};">{{user.interest_two}}</p>
+{% endif %}
+{% if user.interest_three %}
+<p class="interest-item" style="background-color: {{ user.interest_color_three }};">{{user.interest_three}}</p>
+{% endif %}
+{% if user.interest_four %}
+<p class="interest-item" style="background-color: {{ user.interest_color_four }};">{{user.interest_four}}</p>
+{% endif %}

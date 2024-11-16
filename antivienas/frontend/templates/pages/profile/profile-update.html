@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    <title>Profilio redagavimas | Anti Vienas</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+</head>
+<body>
+    {% include "components/top-nav.html" %}
+    <main class="main-double-split">
+        <div class="left-container">
+            {% include "components/side-nav.html" %}
+            {% include "components/terms-of-service.html" %}
+        </div>
+        <div class="middle-container">
+            <div class="background-blob">
+              {% if messages %}
+              <ul class="messages">
+                  {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+              {% include "components/user-images.html" %}
+              <form action="{% url 'profile-update' %}" method="post" class="profile-update-form">
+                {% csrf_token %}
+                  <div class="flex-col-wrapper">
+                      <div class="field">
+                          <label for="first_name">Vardas</label>
+                          <input type="text" name="first_name" value="{{request.user.first_name}}">
+                      </div>
+                      <div class="field">
+                          <label for="last_name">Pavardė</label>
+                          <input type="text" name="last_name" value="{{request.user.last_name}}">
+                      </div>
+                  </div>
+                  <div class="flex-col-wrapper">
+                    <div class="field">
+                      <label for="gender">Lytis</label>
+                      <select name="gender" id="">
+                          {% for key, value in genders.items %}
+                          <option value="{{key}}" {% if value == request.user.gender %} selected {% endif %}>{{value}}</option>
+                          {% endfor %}
+                      </select>
+                    </div>
+                    <div class="field">
+                        <label for="city">Miestas</label>
+                        <select name="city" id="">
+                            {% for key, value in cities.items %}
+                            <option value="{{key}}" {% if request.user.city == value %} selected {% endif %}>{{value}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                  </div>
+                    <div class="field">
+                        <label for="birthday-year">Metai</label>
+                        <input type="date" name="birthday" value="{{request.user.birthday|date:'Y-m-d'}}">
+                    </div>
+                  <div class="flex-col-wrapper">
+                      <div class="field">
+                        <label for="education">Išsilavinimas</label>
+                        <select name="education" id="">
+                            <option value=""></option>
+                            {% for key, value in educations.items %}
+                            <option value="{{key}}" {% if value == request.user.education %} selected {% endif %}>{{value}}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                      <div class="field">
+                          <label for="job">Specialybė</label>
+                          <input type="text" name="job" id="" maxlength="40" value="{{request.user.job}}">
+                      </div>
+                  </div>
+                  <div class="field">
+                      <div class="flex-col">
+                          <label for="interest_one">Pomėgis nr. 1</label>
+                          <div class="color-picker-wrapper">
+                              <input type="text" name="interest_one" id="" maxlength="50" value="{{request.user.interest_one}}">
+                              <div class="color-picker" id="color-picker-one">
+                                <input type="hidden" name="interest_color_one" id="interest-color-one" value="{{request.user.interest_color_one}}">
+                                {% include 'components/color-boxes.html' %}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="field">
+                      <label for="interest_two">Pomėgis nr. 2</label>
+                      <div class="color-picker-wrapper">
+                          <input type="text" name="interest_two" id="" maxlength="50" value="{{request.user.interest_two}}">
+                          <div class="color-picker" id="color-picker-two">
+                            <input type="hidden" name="interest_color_two" id="interest-color-two" value="{{request.user.interest_color_two}}">
+                            {% include 'components/color-boxes.html' %}
+                          </div>
+                      </div>
+                  </div>
+                  <div class="field">
+                    <input type="hidden" name="interest_color_three" id="interest-color-three" value="{{request.user.interest_color_three}}">
+                      <label for="interest_three">Pomėgis nr. 3</label>
+                      <div class="color-picker-wrapper">
+                          <input type="text" name="interest_three" id="" maxlength="50" value="{{request.user.interest_three}}">
+                          <div class="color-picker" id="color-picker-three">
+                            {% include 'components/color-boxes.html' %}
+                          </div>
+                      </div>
+                  </div>
+                  <div class="field">
+                    <input type="hidden" name="interest_color_four" id="interest-color-four" value="{{request.user.interest_color_four}}">
+                    <label for="interest_four">Pomėgis nr. 4</label>
+                    <div class="color-picker-wrapper">
+                        <input type="text" name="interest_four" id="" maxlength="50" value="{{request.user.interest_four}}">
+                        <div class="color-picker" id="color-picker-four">
+                            {% include 'components/color-boxes.html' %}
+                        </div>
+                    </div>
+                  </div>
+                <div class="btn-container btn-bottom-container">
+                  <button type="submit" id="block-btn">Išsaugoti</button>
+              </div>
+            </form>
+            </div>
+        </div>
+    </main>
+</body>
+
+<script>
+  let arr = ["one", "two", "three", "four"];
+
+  arr.forEach((num) =>{
+      let color_picker_id = "color-picker-" + num;
+      let interest_id = "interest-color-" + num;
+
+      let color_picker = document.getElementById(color_picker_id);
+      let picks = color_picker.getElementsByClassName("color-box");
+
+      for (let i = 0; i < picks.length; i++){
+          let input = document.getElementById(interest_id);
+          //initial selection of color
+          if (picks[i].dataset.color == input.value){
+              picks[i].classList.add("selected-color");
+          }
+
+          picks[i].addEventListener("click",()=>{
+              let selected_color = picks[i].dataset.color;
+              input.value = selected_color;
+              for (let j = 0; j < picks.length; j++){
+                  picks[j].classList.remove("selected-color");
+              }
+              picks[i].classList.add("selected-color");
+
+          })
+      };
+  })
+
+  function isValidDate(s) {
+  var bits = s.split('/');
+  var d = new Date(bits[2], bits[1] - 1, bits[0]);
+  return d && (d.getMonth() + 1) == bits[1];
+  }
+</script>
+
+</html>

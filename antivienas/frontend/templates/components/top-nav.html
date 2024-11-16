@@ -15,12 +15,16 @@
     <div class="user-container">
         {% if request.user.is_authenticated %}
         <div id="expandable" class="user-expandable" x-data="{ open: false }" @click="open = ! open">
-            <img src="{{ request.user.img_one.url }}" alt="">
+            {% if request.user.avatar %}
+            <img src="{{ request.user.avatar.image.url }}" alt="">
+            {% else %}
+            <img src="{% static 'assets/user-no-avatar.png' %}" alt="">
+            {% endif %}
             <div class="expander">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
             </div>
             <div id="user-nav" class="user-nav" x-show="open" @click.outside="open = false">
-                <a href="{% url 'profile' request.user.id %}" class="nav-item"><img src="{{ request.user.img_one.url }}" alt=""> {{ request.user.first_name }} {{ request.user.last_name }}</a>
+                <a href="{% url 'profile' request.user.id %}" class="nav-item"><img src="{% if request.user.avatar %}{{ request.user.avatar.image.url }}{% else %}{% static 'assets/user-no-avatar.png' %}{%endif%}" alt=""> {{ request.user.first_name }} {{ request.user.last_name }}</a>
                 <hr>
                 <a href="#" class="nav-item">
                     <div class="nav-item-logo">

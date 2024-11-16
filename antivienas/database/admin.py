@@ -1,14 +1,14 @@
 from django.contrib import admin
-from .models import User, FriendSetting, Dispute, Order
+from .models import User, FriendSetting, Dispute, Order, UserProfilePicture
 
 # Čia registruojami modeliai bus matomi admin/ valdymo skyde
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'profile_type', 'email', 'first_name', 'last_name', 'gender', 'birthday', 'city')
+    list_display = ('pk', 'profile_type', 'email', 'first_name', 'last_name', 'gender', 'birthday', 'city', 'orders_completed')
     search_fields = ('first_name', 'last_name', 'city', 'email', 'pk')
 
 class FriendSettingAdmin(admin.ModelAdmin):
-    list_display = ('friend', 'level', 'orders_completed', 'price_per_hour', 'is_public')
+    list_display = ('friend', 'level', 'price_per_hour', 'is_public')
     search_fields = ('friend',)
 
 class OrderAdmin(admin.ModelAdmin):
@@ -18,8 +18,13 @@ class OrderAdmin(admin.ModelAdmin):
 class DisputeAdmin(admin.ModelAdmin):
     list_display  = [f.name for f in Dispute._meta.fields]
 
+class UserProfilePicAdmin(admin.ModelAdmin):
+    list_display  = [f.name for f in UserProfilePicture._meta.fields]
+
+
 
 admin.site.register(User, UserAdmin)
 admin.site.register(FriendSetting, FriendSettingAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Dispute, DisputeAdmin)
+admin.site.register(UserProfilePicture, UserProfilePicAdmin)

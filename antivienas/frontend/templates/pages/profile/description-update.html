@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    <title>Aprašymo redagavimas | Anti Vienas</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    {% include "components/top-nav.html" %}
+    <main class="main-double-split">
+        <div class="left-container">
+            {% include "components/side-nav.html" %}
+            {% include "components/terms-of-service.html" %}
+        </div>
+        <div class="middle-container">
+          <div class="background-blob">
+              {% if messages %}
+              <ul class="messages">
+                  {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+              <form action="{% url 'description-update' %}" method="post" class="description-update-form">
+                {% csrf_token %}
+                    <label for="description">Aprašymas</label>
+                    <textarea name="description" id="" placeholder="(galima naudoti ir 😊)">{{ request.user.description }}</textarea>
+                <div class="btn-container btn-bottom-container">
+                  <button type="submit" id="block-btn">Išsaugoti</button>
+              </div>
+            </form>
+          </div>
+        </div>
+    </main>
+</body>
+</html>

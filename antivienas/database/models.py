@@ -6,7 +6,10 @@ from django.core.files.storage import FileSystemStorage
 
 from PIL import Image
 import random
+import os
 import datetime as dt
+
+NO_AVATAR_IMG_PATH = "/user-no-avatar.png"
 
 class CityOfService(models.TextChoices):
     """ Susitikimo vietos """
@@ -72,7 +75,6 @@ class CityOfService(models.TextChoices):
     VILKAVISKIS =       "Vilkaviškis"
     VISAGINAS =         "Visaginas"
     ZARASAI =           "Zarasai"
-    NUOTOLINIU =        "Nuotoliniu"
 
 class Genders(models.TextChoices):
     VYRAS = "Vyras"
@@ -118,10 +120,6 @@ class ProfileTypes(models.TextChoices):
     USER =      "User"
     FRIEND =    "Friend"
 
-class PersonalityTypes(models.TextChoices):
-    INTRAVERT =     "Intravert"
-    EKSTRAVERT =    "Ekstravert"
-
 class InterestColorHexes(models.TextChoices):
     GRAY =      "#D9D9D9", "Gray"
     RED =       "#F6C4C4", "Red"
@@ -152,12 +150,8 @@ class OverwriteStorage(FileSystemStorage):
         self.delete(name)
         return super(OverwriteStorage, self)._save(name, content)
 
-def upload_img_one(instance, filename):
-    extension = filename.split(".")[-1]
-    return f"user_uploads/user_{instance.pk}/1.{extension}"
-
 def user_img_upload_path(instance, filename):
-    return f"user_uploads/user_{instance.pk}/{filename}"
+    return os.path.join(f"user_uploads/user_{instance.user.pk}", filename)
 
 class User(AbstractUser):
     """
@@ -173,15 +167,11 @@ class User(AbstractUser):
     birthday =          models.DateField(default=dt.date(1998,5,14))
     city =              models.CharField(max_length=15,choices=CityOfService,null=True,blank=True)
     job =               models.CharField(max_length=40, blank=True)
-    description =       models.TextField(max_length=5000, blank=True)
-    personality_type =  models.CharField(max_length=10, choices=PersonalityTypes, null=True, blank=True)
+    description =       models.TextField(max_length=2500, blank=True)
     gender =            models.CharField(max_length=10, choices=Genders, blank=True, null=True)
     education =         models.CharField(max_length=15, choices=EducationChoices, blank=True, null=True)
-    height_cm =         models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(300)])
-
-    img_one =           models.ImageField(upload_to=upload_img_one, default="/user-no-avatar.png", storage=OverwriteStorage())
-    img_two =           models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
-    img_three =         models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
+    
+    selected_avatar =  models.SmallIntegerField(default=0)
 
     interest_one =      models.CharField(max_length=50, blank=True)
     interest_two =      models.CharField(max_length=50, blank=True)
@@ -193,6 +183,8 @@ class User(AbstractUser):
     interest_color_three =  models.CharField(max_length=7, choices=InterestColorHexes, default=InterestColorHexes.GRAY)
     interest_color_four =   models.CharField(max_length=7, choices=InterestColorHexes, default=InterestColorHexes.GRAY)
 
+    orders_completed =  models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return str(self.email)
     
@@ -200,14 +192,97 @@ class User(AbstractUser):
     def age(self):
         return int((dt.datetime.now().date() - self.birthday).days / 365.25)
     
-    def save_with_img(self, *args, **kwargs):
-        super().save()
-        img = Image.open(self.img_one.path)
-        width, height = img.size  # Get dimensions
+    @property
+    def avatar(self):
+        return UserProfilePicture.avatar(self)
 
-        if width > 300 and height > 300:
-            # keep ratio but shrink down
-            img.thumbnail((width, height))
+class FriendSetting(models.Model):
+    """
+    Vartotojai, kurie tampa draugais, įgyja papildomų parametrų
+    """
+    friend =            models.OneToOneField(User, related_name="friend", on_delete=models.CASCADE, primary_key=True)
+    # 20% fee
+    price_per_hour =    models.PositiveIntegerField(default=0)
+    is_public =         models.BooleanField(default=False)
+    
+    account_number =            models.CharField(max_length=20, blank=True)
+    account_holder_details =    models.CharField(max_length=200, blank=True)
+    
+    level =     models.SmallIntegerField(choices=LvlOfExperience, default=LvlOfExperience.NEWBIE)
+    created =   models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.friend.email)
+
+class UserProfilePicture(models.Model):
+    """User profile pictures"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to=user_img_upload_path)
+    is_avatar = models.BooleanField(default=False)
+    created =   models.DateTimeField(auto_now_add=True)
+    
+    @classmethod
+    def avatar(cls, user):
+        """returns a users selected avatar"""
+
+        try:
+            image = UserProfilePicture.objects.filter(user=user, is_avatar=True)[0]
+        except:
+            return None
+        return image
+    
+    def rebalance_avatar(self, *args, **kwargs):
+        """after deleting an image, makes sure that there's an avatar image"""
+
+        user_images = UserProfilePicture.objects.filter(user=self.user).order_by("created")
+
+        if user_images.count() == 0:
+            return
+
+        avatar = user_images.filter(is_avatar=True).first()
+
+        if not avatar:
+            image = user_images.first()
+            image.is_avatar = True
+            image.save()
+    
+    @classmethod
+    def set_avatar(cls, user, avatar_id):
+        """sets the users preferred avatar"""
+        user_images = UserProfilePicture.objects.filter(user=user).order_by("created")
+        user_images.update(is_avatar=False)
+
+        if user_images.count() == 0:
+            return
+
+        if user_images.count() > avatar_id:
+            image = user_images[avatar_id]
+            image.is_avatar = True
+            image.save()
+
+
+    def delete(self, *args, **kwargs):
+        super().delete()
+        self.rebalance_avatar()
+
+    def crop_and_save(self, *args, **kwargs):
+        super().save()
+
+        # delete if this is 4th picture uploaded
+        images = UserProfilePicture.objects.filter(user=self.user).order_by('created')
+
+        if images.count() > 3:
+            images[0].delete()
+        
+        if images.count() == 1:
+            avatar = images.first()
+            avatar.is_avatar = True
+            avatar.save()
+                  
+
+        img_path = self.image.path
+        img = Image.open(img_path)
+        width, height = img.size  # Get dimensions
 
         # check which one is smaller
         if height < width:
@@ -226,29 +301,10 @@ class User(AbstractUser):
             bottom = width
             img = img.crop((left, top, right, bottom))
 
-        if width > 300 and height > 300:
-            img.thumbnail((300, 300))
+        if width > 400 or height > 400:
+            img.thumbnail((400, 400))
 
-        img.save(self.img_one.path)
-
-class FriendSetting(models.Model):
-    """
-    Vartotojai, kurie tampa draugais, įgyja papildomų parametrų
-    """
-    friend =            models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    # 20% fee
-    price_per_hour =    models.PositiveIntegerField(default=0)
-    orders_completed =  models.PositiveIntegerField(default=0)
-    is_public =         models.BooleanField(default=False)
-    
-    account_number =            models.CharField(max_length=20, blank=True)
-    account_holder_details =    models.CharField(max_length=200, blank=True)
-    
-    level =     models.SmallIntegerField(choices=LvlOfExperience, default=LvlOfExperience.NEWBIE)
-    created =   models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return str(self.friend.email)
+        img.save(img_path)
 
 class Order(models.Model):
     """
