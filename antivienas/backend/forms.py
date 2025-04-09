@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
-from antivienas.database.models import User, FriendSetting, Order, Dispute, UserProfilePicture
+from antivienas.database.models import User, FriendSetting, Order, Dispute, UserProfilePicture, VerifyIdPicture
 
 class MyUserCreationForm(UserCreationForm):
     class Meta:
@@ -24,6 +24,11 @@ class UserDescriptionUpdateForm(ModelForm):
 class UserImgUploadForm(ModelForm):
     class Meta:
         model = UserProfilePicture
+        fields = ['user', 'image']
+
+class IdImgUploadForm(ModelForm):
+    class Meta:
+        model = VerifyIdPicture
         fields = ['user', 'image']
 
 class FriendSettingsUpdateForm(ModelForm):

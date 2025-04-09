@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    <title>Profilio redagavimas | Anti Vienas</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+</head>
+<body>
+    {% include "components/top-nav.html" %}
+    <main class="main-double-split">
+        <div class="left-container">
+            {% include "components/side-nav.html" %}
+            {% include "components/terms-of-service.html" %}
+        </div>
+        <div class="middle-container">
+            <div class="background-blob">
+              {% if messages %}
+              <ul class="messages">
+                  {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+              <div class="page-explanation">
+                  <h2>Tapatybės patvirtinimas</h2>
+                  <p>Norėdami patvirtinti tapatybę, įkelkite asmens dokumento nuotrauką (iki 2.5MB dydžio). Jeigu įvyktų taip, kad jūsų tapatybės patvirtinti nesugebėtume, gausite paaiškinimą kodėl. Priežąstys dėl kurių tai gali įvykti:</p>
+                  <ul>
+                    <li>Neryški nuotrauka.</li>
+                    <li>Duomenys neatitinka vartotojo profilio.</li>
+                  </ul>
+                  <p><b>Draugai kurie patvirtina tapatybę, gauna 60% daugiau užsakymų</b>, dėl didesnio pasitikėjimo.</p>
+              </div>
+              <div class="img-update-section" id="id-verify-section">
+              <div class="img-shell id-shell">
+                {% if id_img %}
+                    {% if id_img.is_verified is None %}
+                        <p>Jūsų tapatybė šiuo metu yra tikrinama.</p>
+                    {% elif id_img.is_verified is False %}
+                        <p>Jusų tapatybė nebuvo patvirtinta. Komentaras: {{ id_img.comment }}</p>
+                        {% include 'components/id-verify-form.html' %}
+                    {% endif %}
+                {% else %}
+                    {% include 'components/id-verify-form.html' %}
+                {% endif %}
+              </div>
+            </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

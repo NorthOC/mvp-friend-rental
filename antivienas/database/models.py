@@ -153,6 +153,9 @@ class OverwriteStorage(FileSystemStorage):
 def user_img_upload_path(instance, filename):
     return os.path.join(f"user_uploads/user_{instance.user.pk}", filename)
 
+def user_id_upload_path(instance, filename):
+    return os.path.join(f"user_uploads/user_{instance.user.pk}/id", filename)
+
 class User(AbstractUser):
     """
     Vartotojo modelis
@@ -160,7 +163,6 @@ class User(AbstractUser):
         
     # ID verifikavimui
     is_id_verified =    models.BooleanField(default=False)
-    id_img =            models.ImageField(upload_to=user_img_upload_path, blank=True, null=True)
 
     # vartotojo duomenys
     profile_type =      models.CharField(max_length=6, choices=ProfileTypes, default=ProfileTypes.USER)
@@ -305,6 +307,20 @@ class UserProfilePicture(models.Model):
             img.thumbnail((400, 400))
 
         img.save(img_path)
+
+class VerifyIdPicture(models.Model):
+    """Id verification"""
+    user = models.OneToOneField(User, related_name="idpicture", on_delete=models.CASCADE, primary_key=True)
+    image = models.ImageField(upload_to=user_id_upload_path)
+    is_verified = models.BooleanField(null=True, blank=True)
+    comment = models.CharField(max_length=300, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super().save()
+        if self.is_verified:
+            self.user.is_id_verified = True
+            self.user.save()
+
 
 class Order(models.Model):
     """

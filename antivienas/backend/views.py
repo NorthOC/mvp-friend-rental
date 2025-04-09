@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import MyUserCreationForm, UserProfileUpdateForm, FriendSettingsUpdateForm
 from .forms import MeetingCreationForm, MeetingCancelForm, CreateDisputeForm
-from .forms import UserDescriptionUpdateForm
+from .forms import UserDescriptionUpdateForm, IdImgUploadForm
 from .forms import UserImgUploadForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.files import File
 from antivienas.database.models import CityOfService, User, Genders, FriendSetting, Order
 from antivienas.database.models import InterestColorHexes, EducationChoices, MeetingHours, OrderStatuses, ProfileTypes
-from antivienas.database.models import UserProfilePicture
+from antivienas.database.models import UserProfilePicture, VerifyIdPicture
 import datetime as dt
 
 #GLOBAL VARS
@@ -155,7 +155,7 @@ def profile_page(request, user_id):
     except:
         pass
 
-    context['images'] = UserProfilePicture.objects.filter(user=user).order_by("created")
+    context['images'] = UserProfilePicture.objects.filter(user=user).order_by("-is_avatar","created")
 
     return render(request, template, context)
 
@@ -241,7 +241,6 @@ def img_upload_action(request):
             image.crop_and_save()
         else:
             messages.error(request, form.errors.as_text)
-            return render(request, "components/user-images.html")
         
         context = {"images": request.user.images.all().order_by("created")}
         return render(request, "components/user-images.html", context=context)
@@ -254,6 +253,33 @@ def select_avatar_action(request, img_id):
         context = {"images": request.user.images.all().order_by("created")}
         return render(request, "components/user-images.html", context=context)
 
+@login_required
+def verify_id_page(request):
+    template = "pages/profile/verify-id.html"
+    context = {}
+
+    if request.user.is_id_verified:
+        return redirect('profile', request.user.pk)
+
+    id_image = VerifyIdPicture.objects.filter(user=request.user).first()
+
+    if request.method == 'POST':
+        if (id_image and id_image.is_verified is False) or not id_image:
+            post_data = request.POST.copy()
+            post_data['user'] = request.user
+
+            if id_image:
+                form = IdImgUploadForm(instance=id_image,data=post_data, files=request.FILES)
+            else:
+                form = IdImgUploadForm(data=post_data, files=request.FILES)
+            
+            if form.is_valid():
+                id_image = form.save()
+            else:
+                messages.error(request, form.errors.as_text)
+    
+    context['id_img'] = id_image
+    return render(request, template, context)
 
 @login_required
 def friend_settings_update_action(request):

@@ -26,12 +26,16 @@ urlpatterns = [
     path('registruotis/', views.register_page, name="register"),
     path("prisijungti/", views.login_page, name="login"),
     path("atsijungti/", views.logout_action, name="logout"),
+
     path("profilis/<int:user_id>/", views.profile_page, name="profile"),
     path("atnaujinti-profili", views.profile_update_action, name="profile-update"),
     path("atnaujinti-aprasyma", views.description_update_action, name="description-update"),
     path("img/delete/<int:img_id>/", views.img_delete_action, name="image-delete"),
     path("img/upload/", views.img_upload_action, name="image-upload"),
     path("img/avatar/<int:img_id>/", views.select_avatar_action , name="set-avatar"),
+
+    path("tapatybes-patvirtinimas/", views.verify_id_page, name="verify-id"),
+
     path("profilis/draugo-nustatymai/atnaujinti", views.friend_settings_update_action, name="friend-settings-update"),
     path("tapti-draugu/", views.become_friend_action, name="become-friend"),
     path("susitikimai/", views.meeting_page, name="meeting-page"),

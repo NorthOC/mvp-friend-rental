@@ -18,3 +18,17 @@ add celery task to check meeting status
 add about page
 add faq page
 add safety guidelines page
+
+PROCESS:
+
+USER REQUEST TO MEET -> 
+FRIEND CONFIRM ->
+USER PAYMENT ->
+MEETING CONFIRMATION (CODE) ->
+FRIEND GETS PAID
+
+PUZZLES:
+
+CHAT FUNCTION?
+HOW TO HANDLE PAYMENTS?
+HOW TO TRACK AND NOTIFY MEETING STATUS?

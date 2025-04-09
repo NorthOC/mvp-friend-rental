@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, FriendSetting, Dispute, Order, UserProfilePicture
+from .models import User, FriendSetting, Dispute, Order, UserProfilePicture, VerifyIdPicture
 
 # Čia registruojami modeliai bus matomi admin/ valdymo skyde
 
@@ -21,6 +21,10 @@ class DisputeAdmin(admin.ModelAdmin):
 class UserProfilePicAdmin(admin.ModelAdmin):
     list_display  = [f.name for f in UserProfilePicture._meta.fields]
 
+class VerifyIdAdmin(admin.ModelAdmin):
+    list_display  = [f.name for f in VerifyIdPicture._meta.fields]
+    search_fields = ('user', 'is_verified')
+
 
 
 admin.site.register(User, UserAdmin)
@@ -28,3 +32,4 @@ admin.site.register(FriendSetting, FriendSettingAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Dispute, DisputeAdmin)
 admin.site.register(UserProfilePicture, UserProfilePicAdmin)
+admin.site.register(VerifyIdPicture, VerifyIdAdmin)

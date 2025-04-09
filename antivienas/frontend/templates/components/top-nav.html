@@ -9,9 +9,6 @@
             </div>
         </a>
     </div>
-    <div class="guide-container">
-        <p>Turi patarimų mums tobulėti? <a href="#">Pasidalink</a>!</p>
-    </div>
     <div class="user-container">
         {% if request.user.is_authenticated %}
         <div id="expandable" class="user-expandable" x-data="{ open: false }" @click="open = ! open">
@@ -38,8 +35,6 @@
                 {% include "components/terms-of-service.html" %}
             </div>
         </div>
-        {% else %}
-        <a href="{% url 'login' %}">Prisijungti</a>
         {% endif %}
     </div>
 </nav>

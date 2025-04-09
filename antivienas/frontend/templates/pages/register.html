@@ -28,15 +28,19 @@
                         {% csrf_token %}
                         <div class="grid-container">
                             <div class="field">
-                                <label for="first_name">Vardas:</label>
+                                <label for="first_name">Vardas</label>
                                 <input type="input" name="first_name" id="" required>
                             </div>
                             <div class="field">
-                                <label for="last_name">Pavardė:</label>
+                                <label for="last_name">Pavardė</label>
                                 <input type="input" name="last_name" id="" required>
                             </div>
                             <div class="field">
-                                <label for="city">Susitikimo vieta:</label>
+                                <label for="birthday">Gimimo data</label>
+                                <input type="date" name="birthday" id="" required>
+                            </div>
+                            <div class="field">
+                                <label for="city">Miestas</label>
                                 <select name="city" id="" required>
                                     <option value="" disabled selected></option>
                                     {% for key, value in cities.items %}
@@ -44,33 +48,35 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="field">
-                                <label for="gender">Lytis:</label>
-                                <select name="gender" id="gender" required>
-                                    <option value="" disabled selected></option>
-                                    {% for key, value in genders.items %}
-                                    <option value="{{key}}">{{value}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
                         </div>
                         <div class="field">
-                            <label for="email">El. paštas:</label>
+                            <label for="gender">Lytis</label>
+                            <div class="gender-select-container">
+                                <div>
+                                    <input type="radio" id="gender1" name="gender" id="" value="Vyras">
+                                    <label for="gender1">Vyras</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="gender2" name="gender" id="" value="Moteris">
+                                    <label for="gender2">Moteris</label>
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="field">
+                            <label for="email">El. paštas</label>
                             <input type="email" name="email" id="" required>
                         </div>
-                        <div class="grid-container">
-                            <div class="field">
-                                <label for="password1">Slaptažodis:</label>
-                                <input type="password" name="password" id="" required>
-                            </div>
-                            <div class="field">
-                                <label for="birthday">Gimimo data:</label>
-                                <input type="date" name="birthday" id="" required>
-                            </div>
+                        <div class="field">
+                            <label for="password1">Slaptažodis</label>
+                            <input type="password" name="password" id="" required>
+                        </div>
+                        <div class="field">
+                            <label for="password2">Pakartokite slaptažodį</label>
+                            <input type="password" name="password2" id="" required>
                         </div>
                         <div>
                             <input type="checkbox" name="agreement" id="agreement">
-                            <label for="agreement">Perskaičiau ir sutinku su <a href="#">vartotojų taisyklėmis</a> ir <a href="#">privatumo sąlygomis</a>.</label>
+                            <label for="agreement" class="rule-agreement">Perskaičiau ir sutinku su <a href="#">naudojimosi sąlygomis</a> ir <a href="#">privatumo politika</a>.</label>
                         </div>
                         <button type="submit" id="login-btn">Registruotis</button>
                     </form>

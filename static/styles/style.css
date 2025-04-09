@@ -22,7 +22,8 @@
     --light-green-hover: #b0f5b6;
     --accept-color: #84DC75;
     --pink: #F97FA4;
-    --red: #FF8C8C;
+    --text-pink: rgb(219, 90, 111);
+    --red: #ef4343;
 }
 
 /* GLOBAL CSS */
@@ -59,7 +60,7 @@ input::-webkit-inner-spin-button {
 .side-nav svg{
     max-width: 25px;
     max-height: 25px;
-    fill: var(--blue);
+    fill: var(--pink);
 }
 .side-nav .nav-item-logo{
     border-radius: 50%;
@@ -93,9 +94,9 @@ input::-webkit-inner-spin-button {
 
 /* TOP NAV */
 .nav-top{
-    display: grid;
-    padding: 10px;
-    grid-template-columns: 0.7fr 1fr 0.7fr;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     background-color: var(--component-bg);
     box-shadow: 0px 0px 4px 0px var(--fade);
@@ -106,6 +107,7 @@ input::-webkit-inner-spin-button {
     display: flex;
     gap: 10px;
     text-decoration: none;
+    width: fit-content;
 }
 .nav-top img{
     max-width: 45px;
@@ -196,7 +198,7 @@ input::-webkit-inner-spin-button {
     grid-template-columns: 1fr 3fr 1fr;
 }
 main{
-    padding-top: 70px;
+    padding-top: 62px;
     height: 100%;
 }
 
@@ -206,6 +208,8 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 92vh;
+    
 }
 .left-container small{
     color: var(--gray);
@@ -227,14 +231,13 @@ main{
     background-color: var(--component-bg);
     width: 90%;
     padding: 20px;
-    margin: 30px auto;
+    margin: 5px auto 30px auto;
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px var(--fade);
 }
 .search-container .filter-container{
     display: flex;
     gap: 10px;
-    justify-content: space-evenly;
 }
 .search-container form{
     display: flex;
@@ -244,17 +247,25 @@ main{
 .search-container .filter select{
     border-radius: 20px;
     padding: 5px 10px;
-    min-width: 120px;
-    border: 1px solid gray;
+    height: 100%;
+    border: 1px solid #c5c5c5;
+    background-color: white;
 }
 .search-container .search-field{
-    box-shadow: inset 1px 1px 2px 2px var(--fade);
-    border: none;
+    border: 1px solid #c5c5c5;
     min-height: 40px;
     border-radius: 20px;
     padding-left: 15px;
     width: 100%;
-    font-size: 18px;
+    font-size: 16px;
+}
+.search-container .search-svg{
+    fill: var(--pink);
+    width: 15px;
+    height: 15px;
+}
+.search-container .search-field:hover, .search-container .filter select:hover{
+    border: 1px solid gray;
 }
 .search-container .search-field:focus-visible{
     outline: none;
@@ -266,12 +277,19 @@ main{
 }
 .search-container .search-submit{
     min-width: 100px;
-    border: 1px solid var(--light-gray);
+    color: var(--text-pink);
+    border: none;
     background: none;
     border-radius: 5px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    gap:
+5px;
 }
 .search-container .search-submit:hover{
-    border: 1px solid var(--blue);
+    border: 1px solid var(--pink);
 }
 .search-box i{
     position: absolute;
@@ -338,8 +356,8 @@ main{
 .btn-container button{
     height: 35px;
     padding: 0 20px;
-    border: 1px solid #a19e9e;
-    background: #f5f5f5;
+    background: none;
+    color: var(--text-pink);
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
@@ -355,11 +373,13 @@ main{
 }
 .action-part a, .meetup-btn{
     width: 150px;
+    border: 1px solid var(--pink);
 }
 .action-part a:hover, 
 .btn-container a:hover,
 .btn-container button:hover{
-    background: #eae9e9;
+    border: 1px solid var(--red);
+    color: var(--red);
 }
 .friend-card-container .level-container{
     position: absolute;
@@ -408,9 +428,10 @@ main{
     height: 21px;
 }
 .price-container .meetup-svg, .action-part .meetup-svg{
-    fill: var(--checkmark-color);
+    fill: var(--pink);
     width: 20px;
     height: 20px;
+    
 }
 .friend-card-container .interest-container{
     display: flex;
@@ -580,16 +601,19 @@ table .user-info .lower{
 /* PROFILE MANAGER */
 .background-blob{
     background: white;
-    border-radius: 0px 0px 20px 20px;
+    border-radius: 10px;
     box-shadow: 0px 0px 4px 1px var(--fade);
     width: 95%;
     position: relative;
     background: white;
     padding: 15px;
     min-height: 90%;
+    margin: 0px 5px;
+    margin-bottom: 20px;
 }
 .middle-container .profile-manager{
     padding-left: 50px;
+    margin-left: 5px;
     display: flex;
     flex-direction: column;
 }
@@ -624,17 +648,23 @@ table .user-info .lower{
     align-items: center;
     gap: 5px;
 }
+.carousel .img-preview .img-selected{
+    border: 2px solid black;
+}
 .images-container .image-container img{
-    max-width: 150px;
+    max-width: 176px;
     width: 100%;
     border-radius: 50%;
 }
 .images-container .img-preview{
     max-width: 40px;
+    display: flex;
+    align-items: center;
 }
 .images-container .img-preview img{
     width: 100%;
     border-radius: 50%;
+    border  : 2px solid white;
 }
 .info-container .name-container{
     display: flex;
@@ -806,17 +836,19 @@ table .user-info .lower{
     padding: 10px;
 }
 .link-container a:first-child{
-    border-right: 1px solid var(--fade);
     border-radius: 25px 0px 0px 0px;
 }
 .link-container a:last-child{
-    border-right: 1px solid var(--fade);
     border-radius: 0px 25px 0px 0px;
 }
 .link-container .current-page{
-    background-color: var(--soft-blue);
-    text-decoration: none;
+    text-decoration: underline;
     cursor: default;
+    border: 1px solid var(--pink);
+    color: var(--pink);
+}
+.link-container a:hover{
+    text-decoration: underline;
 }
 .login-container .login{
     padding: 20px 30px;
@@ -827,14 +859,18 @@ table .user-info .lower{
     gap: 5px;
     margin-bottom: 20px;
 }
-.login input[type="email"], .login input[type="password"], .login input[type="input"], .login select, .login input[type="date"]  {
+.login input, .login select{
     border-radius: 15px;
-    border: 1px solid var(--fade);
-    box-shadow: 0px 0px 4px 1px var(--fade);
+    border: 1px solid #c5c5c5;
     padding-left: 12px;
     background-color: white;
     height: 35px;
 }
+
+.login input:hover, .login select:hover{
+    border: 1px solid gray;
+}
+
 .login label{
     font-size: 1em;
     padding-left: 10px;
@@ -851,14 +887,16 @@ table .user-info .lower{
     margin-top: 20px;
     width: 100%;
     height: 40px;
-    font-size: 1.2em;
-    text-decoration: underline;
-    background-color: var(--light-green);
-    border: 1px solid var(--fade);
+    font-size: 1.1em;
+    background: none;
+    border-radius: 5px;
+    border: 1px solid var(--pink);
     cursor: pointer;
+    color: var(--pink);
 }
 .login #login-btn:hover{
-    text-decoration: none;
+    border: 1px solid var(--text-pink);
+    color: var(--text-pink);
 }
 .login .grid-container{
     display: grid;
@@ -869,8 +907,34 @@ table .user-info .lower{
     max-width: 200px;
     width: 100%;
 }
+.login input[type="radio"]{
+    height: 20px;
+    width: 20px;
+    display: inline;
+}
 .login .grid-container #gender{
     width: fit-content;
+}
+.login .rule-agreement a{
+    color: var(--pink);
+}
+.login .rule-agreement a:hover{
+    color: var(--text-pink);
+    text-decoration: underline;
+}
+.login .gender-select-container{
+    display: flex;
+    gap: 20px;
+    padding-left: 5px;
+}
+.gender-select-container div{
+    display: flex;
+    gap: 5px;
+}
+.gender-select-container label{
+    padding: 0px;
+    color: #000;
+    font-size: 14px;
 }
 
 .img-update-section{
@@ -878,15 +942,25 @@ table .user-info .lower{
     max-width: 550px;
     margin: auto;
     gap: 10px;
+    margin-bottom: 10px;
 }
 .img-update-section img{
     width: 100%;
     max-width: 180px;
     border-radius: 50%;
+    border: 2px solid white;
+}
+.img-update-section svg{
+    width: 100%;
+    max-width: 180px;
 }
 .img-update-section .img-shell{
     position: relative;
 }
+.img-update-section .img-shell .img-selected{
+    border: 2px solid #000;
+}
+
 .img-update-section .delete-action, 
 .img-update-section .upload-action,
 .img-update-section .avatar-action{
@@ -907,15 +981,15 @@ table .user-info .lower{
     top: 0;
     right: 0;
 }
-.img-update-section svg{
+.img-update-section form svg{
     max-width: 20px;
     width: 100%;
 }
 .img-update-section .delete-action svg{
-    fill: red;
+    fill: var(--red);
 }
 .img-update-section .upload-action svg{
-    fill: var(--checkmark-color);
+    fill: #02D67D;
 }
 .img-update-section .avatar-action svg{
     fill: #02D67D;
@@ -925,6 +999,10 @@ table .user-info .lower{
     width: 100%;
     height: 100%;
     justify-content: center;
+}
+
+.page-explanation p{
+    margin: 10px 0px;
 }
 
 /* RESPONSIVE DESIGN */

@@ -21,28 +21,24 @@
             <div class="background-blob profile-manager">
                 <div class="details-container">
                     <div class="images-container">
-                        <div class="image-container" data-id="0">
+                        <div class="image-container">
                             {% if user.avatar %}
-                            <img src="{{ user.avatar.image.url }}" alt="">
+                            <img id="avatar-image" src="{{ user.avatar.image.url }}" alt="">
                             {% else %}
                             <img src="{% static 'assets/user-no-avatar.png' %}" alt="">
                             {% endif %}
                         </div>
-                        <div class="carousel">
-                            {% if images.count > 1 %}
+                        {% if images.count > 1 %}
+                        <div class="carousel" id="carousel">
                             {% for image in images %}
-                            <div class="img-preview" data-id="0"><img src="{{ image.image.url }}" alt=""></div>
+                            <div class="img-preview"><img {% if image == user.avatar %}class="img-selected"{% endif %} src="{{ image.image.url }}" alt=""></div>
                             {% endfor %}
-                            {% endif %}
                         </div>
+                        <script src="{% static 'scripts/profile/img-carousel.js' %}"></script>
+                        {% endif %}
                     </div>
                     <div class="info-container">
                         <div class="name-container"><h1>{{user.first_name}} {{user.last_name}}</h1> <small>{{ user.gender|lower|slice:"0:3" }}. {{ user.age }}m.</small>
-                        <div class="level-container">
-                            {% if friend_params %}
-                            <p class="level" style="background-color: var(--blue);">{% if user.gender == "Vyras" %}{{ friend_params.get_level_display }}{% else %}{{ friend_params.get_level_display|slice:"0:-2"|add:"ė" }}{% endif %}</p>
-                            {% endif %}
-                        </div>
                         </div>
                         <div class="level-container">
                             <div class="id-container">
@@ -84,13 +80,13 @@
                         </div>
                         {% if friend_params and friend_params.is_public %}
                         <div class="price-container">
+                            <p class="price"><strong>{{friend_params.price_per_hour}} €</strong> <span class="hourly-rate">(valanda)</span></p>
                             <div class="btn-container">
                                 <a href="#" class="meetup-btn">
-                                    <svg class="meetup-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l96 0 0 80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416 448 416c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0z"/></svg>
+                                    <svg class="meetup-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M512 240c0 114.9-114.6 208-256 208c-37.1 0-72.3-6.4-104.1-17.9c-11.9 8.7-31.3 20.6-54.3 30.6C73.6 471.1 44.7 480 16 480c-6.5 0-12.3-3.9-14.8-9.9c-2.5-6-1.1-12.8 3.4-17.4c0 0 0 0 0 0s0 0 0 0s0 0 0 0c0 0 0 0 0 0l.3-.3c.3-.3 .7-.7 1.3-1.4c1.1-1.2 2.8-3.1 4.9-5.7c4.1-5 9.6-12.4 15.2-21.6c10-16.6 19.5-38.4 21.4-62.9C17.7 326.8 0 285.1 0 240C0 125.1 114.6 32 256 32s256 93.1 256 208z"/></svg>
                                     <span>Susitikti</span>
                                 </a>
                             </div>
-                            <p class="price"><strong>{{friend_params.price_per_hour}}.00 €</strong> <span class="hourly-rate">(valanda)</span></p>
                         </div>
                         {% endif %}
                     </div>
@@ -104,13 +100,18 @@
                     <p style="font-style: italic;">Aprašymo nėra</p>
                     {% endif %}
                 </div>
+                {% if user.id == request.user.id %}
                 <div class="btn-container btn-bottom-container">
                     <a href="{% url 'profile-update'%}"><span>Redaguoti profilį</span></a>
                     <a href="{% url 'description-update'%}"><span>Redaguoti aprašymą</span></a>
-                    <a href="#"><span>Įkelti nuotraukas</span></a>
-                    <a href="#"><span>Patvirtinti tapatybę</span></a>
+                    {% if not request.user.is_id_verified %}
+                    <a href="{% url 'verify-id' %}"><span>Patvirtinti tapatybę</span></a>
+                    {% endif %}
+                    {% if friend_params %}
                     <a href="#"><span>Draugo nustatymai</span></a>
+                    {% endif %}
                 </div>
+                {% endif %}
             </div>
         </div>
     </main>
